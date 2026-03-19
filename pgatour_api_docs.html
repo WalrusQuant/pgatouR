@@ -76,9 +76,19 @@ Content-Type: application/json</code></pre>
 <td>Full player directory (2,486 players for PGA Tour)</td>
 </tr><tr class="even"><td><code>GET https://data-api.pgatour.com/schedule/{tourCode}/{year}</code></td>
 <td>Full season schedule (48 events for 2026) with dates, purse, course, champion</td>
-</tr><tr class="odd"><td><code>GET https://data-api.pgatour.com/odds/interactivity</code></td>
+</tr><tr class="odd"><td><code>GET https://data-api.pgatour.com/player/profiles/{playerId}</code></td>
+<td>Player profile overview (career highlights, bio basics, overview stats)</td>
+</tr><tr class="even"><td><code>GET https://data-api.pgatour.com/player/profiles/{playerId}/career</code></td>
+<td>Career achievements (starts, cuts, wins, finishes, earnings)</td>
+</tr><tr class="odd"><td><code>GET https://data-api.pgatour.com/player/profiles/{playerId}/results</code></td>
+<td>Tournament-by-tournament results with round scores</td>
+</tr><tr class="even"><td><code>GET https://data-api.pgatour.com/player/profiles/{playerId}/stats</code></td>
+<td>Full stat profile (131 stats with ranks, values, categories)</td>
+</tr><tr class="odd"><td><code>GET https://data-api.pgatour.com/player/profiles/{playerId}/bio</code></td>
+<td>Biographical text, amateur highlights</td>
+</tr><tr class="even"><td><code>GET https://data-api.pgatour.com/odds/interactivity</code></td>
 <td>Odds interactivity config</td>
-</tr><tr class="even"><td><code>GET https://data-api.pgatour.com/content/watch/speedRounds/{tourCode}</code></td>
+</tr><tr class="odd"><td><code>GET https://data-api.pgatour.com/content/watch/speedRounds/{tourCode}</code></td>
 <td>Speed rounds content</td>
 </tr></tbody></table></div>
 <div class="section level2">

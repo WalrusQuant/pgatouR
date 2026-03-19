@@ -213,6 +213,87 @@ For shot-by-shot video clips (one clip per stroke in a round):
 pga_tourcast_videos("R2026475", "39971", round = 1)
 ```
 
+## Player Profiles
+
+The player profile endpoints give you a deep dive on any player — all
+from REST endpoints that don’t require GraphQL.
+
+### Profile Overview
+
+``` r
+profile <- pga_player_profile("52955")  # Ludvig Aberg
+profile$first_name   # "Ludvig"
+profile$country      # "Sweden"
+profile$age          # "26"
+profile$college      # "Texas Tech University"
+
+# Career highlights: wins, FedExCup rank, world rank
+profile$highlights
+#> # A tibble: 6 × 3
+#>    title                   value subtitle
+#>    <chr>                   <chr> <chr>
+#>  1 PGA TOUR Wins           2     NA
+#>  2 Wins (2026)             0     NA
+#>  3 FedExCup Standings      11    PTS: 685
+#>  4 World Rank (OWGR)       17    NA
+#>  ...
+
+# Quick overview stats (career, season, bio, performance)
+profile$overview
+```
+
+### Player Stats (131 Stats in One Call)
+
+This is one of the most powerful endpoints — a player’s full stat
+profile with ranks:
+
+``` r
+stats <- pga_player_stats("52955")
+#> # A tibble: 131 × 11
+#>    stat_id title                rank  value  category
+#>    <chr>   <chr>                <chr> <chr>  <chr>
+#>  1 02675   SG: Total            13    1.245  STROKES_GAINED, SCORING
+#>  2 02674   SG: Tee-to-Green     12    1.150  STROKES_GAINED, DRIVING
+#>  3 02567   SG: Off-the-Tee      29    0.460  STROKES_GAINED, DRIVING
+#>  4 02568   SG: Approach the Gr… 23    0.508  STROKES_GAINED, APPROACH
+#>  ...
+```
+
+### Tournament Results
+
+``` r
+results <- pga_player_results("52955")
+results[, c("tournament", "pos", "total", "to_par", "winnings")]
+#> # A tibble: 6 × 5
+#>    tournament                 pos   total to_par winnings
+#>    <chr>                      <chr> <chr> <chr>  <chr>
+#>  1 The American Express       W/D   135   -9     $-
+#>  2 Farmers Insurance Open     CUT   150   +6     $-
+#>  3 AT&T Pebble Beach Pro-Am   T37   277   -11    $78,375
+#>  4 The Genesis Invitational   T20   275   -9     $259,500
+#>  5 Arnold Palmer Invitational T3    276   -12    $1,200,000
+#>  6 THE PLAYERS Championship   T5    279   -9     $925,000
+```
+
+### Career, Bio, and Tournament Status
+
+``` r
+# Career achievements
+pga_player_career("52955")
+
+# Biographical text and amateur highlights
+bio <- pga_player_bio("52955")
+bio$text  # Character vector of bio paragraphs
+length(bio$amateur_highlights)  # 19 amateur achievements
+
+# Is a player in the current tournament?
+pga_player_tournament_status("39971")  # Sungjae Im
+#> # A tibble: 1 × 11
+#>    player_id tournament_name      position thru  score total
+#>    <chr>     <chr>                <chr>    <chr> <chr> <chr>
+#>  1 39971     Valspar Championship 1        F     -7    -7
+```
+
 ## Statistics
 
 ### Pulling Stats

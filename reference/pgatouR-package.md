@@ -8,6 +8,8 @@ GraphQL and REST APIs, returning tidy tibbles.
 
 Useful links:
 
+- <https://walrusquant.github.io/pgatouR/>
+
 - <https://github.com/WalrusQuant/pgatouR>
 
 - Report bugs at <https://github.com/WalrusQuant/pgatouR/issues>

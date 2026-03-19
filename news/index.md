@@ -43,6 +43,23 @@ Initial release.
   — Full season schedule with dates, purse, course, champion, and
   FedExCup points
 
+#### Player Profiles
+
+- [`pga_player_profile()`](https://walrusquant.github.io/pgatouR/reference/pga_player_profile.md)
+  — Overview with career highlights, wins, earnings, world rank, bio
+  basics
+- [`pga_player_career()`](https://walrusquant.github.io/pgatouR/reference/pga_player_career.md)
+  — Career achievements: starts, cuts, wins, finish distribution,
+  earnings
+- [`pga_player_results()`](https://walrusquant.github.io/pgatouR/reference/pga_player_results.md)
+  — Tournament-by-tournament results with round scores and earnings
+- [`pga_player_stats()`](https://walrusquant.github.io/pgatouR/reference/pga_player_stats.md)
+  — Full stat profile (131 stats with ranks) in a single call
+- [`pga_player_bio()`](https://walrusquant.github.io/pgatouR/reference/pga_player_bio.md)
+  — Biographical text and amateur highlights
+- [`pga_player_tournament_status()`](https://walrusquant.github.io/pgatouR/reference/pga_player_tournament_status.md)
+  — Live tournament status if currently playing
+
 #### Content
 
 - [`pga_news()`](https://walrusquant.github.io/pgatouR/reference/pga_news.md)

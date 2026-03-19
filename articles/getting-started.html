@@ -277,6 +277,87 @@ functions use the full ID (<code>"R2026475"</code>).</p>
 </div>
 </div>
 <div class="section level2">
+<h2 id="player-profiles">Player Profiles<a class="anchor" aria-label="anchor" href="#player-profiles"></a>
+</h2>
+<p>The player profile endpoints give you a deep dive on any player — all
+from REST endpoints that don’t require GraphQL.</p>
+<div class="section level3">
+<h3 id="profile-overview">Profile Overview<a class="anchor" aria-label="anchor" href="#profile-overview"></a>
+</h3>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">profile</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pga_player_profile.html">pga_player_profile</a></span><span class="op">(</span><span class="st">"52955"</span><span class="op">)</span>  <span class="co"># Ludvig Aberg</span></span>
+<span><span class="va">profile</span><span class="op">$</span><span class="va">first_name</span>   <span class="co"># "Ludvig"</span></span>
+<span><span class="va">profile</span><span class="op">$</span><span class="va">country</span>      <span class="co"># "Sweden"</span></span>
+<span><span class="va">profile</span><span class="op">$</span><span class="va">age</span>          <span class="co"># "26"</span></span>
+<span><span class="va">profile</span><span class="op">$</span><span class="va">college</span>      <span class="co"># "Texas Tech University"</span></span>
+<span></span>
+<span><span class="co"># Career highlights: wins, FedExCup rank, world rank</span></span>
+<span><span class="va">profile</span><span class="op">$</span><span class="va">highlights</span></span>
+<span><span class="co">#&gt; # A tibble: 6 × 3</span></span>
+<span><span class="co">#&gt;    title                   value subtitle</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;                   &lt;chr&gt; &lt;chr&gt;</span></span>
+<span><span class="co">#&gt;  1 PGA TOUR Wins           2     NA</span></span>
+<span><span class="co">#&gt;  2 Wins (2026)             0     NA</span></span>
+<span><span class="co">#&gt;  3 FedExCup Standings      11    PTS: 685</span></span>
+<span><span class="co">#&gt;  4 World Rank (OWGR)       17    NA</span></span>
+<span><span class="co">#&gt;  ...</span></span>
+<span></span>
+<span><span class="co"># Quick overview stats (career, season, bio, performance)</span></span>
+<span><span class="va">profile</span><span class="op">$</span><span class="va">overview</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="player-stats-131-stats-in-one-call">Player Stats (131 Stats in One Call)<a class="anchor" aria-label="anchor" href="#player-stats-131-stats-in-one-call"></a>
+</h3>
+<p>This is one of the most powerful endpoints — a player’s full stat
+profile with ranks:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pga_player_stats.html">pga_player_stats</a></span><span class="op">(</span><span class="st">"52955"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 131 × 11</span></span>
+<span><span class="co">#&gt;    stat_id title                rank  value  category</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;   &lt;chr&gt;                &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;</span></span>
+<span><span class="co">#&gt;  1 02675   SG: Total            13    1.245  STROKES_GAINED, SCORING</span></span>
+<span><span class="co">#&gt;  2 02674   SG: Tee-to-Green     12    1.150  STROKES_GAINED, DRIVING</span></span>
+<span><span class="co">#&gt;  3 02567   SG: Off-the-Tee      29    0.460  STROKES_GAINED, DRIVING</span></span>
+<span><span class="co">#&gt;  4 02568   SG: Approach the Gr… 23    0.508  STROKES_GAINED, APPROACH</span></span>
+<span><span class="co">#&gt;  ...</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="tournament-results">Tournament Results<a class="anchor" aria-label="anchor" href="#tournament-results"></a>
+</h3>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pga_player_results.html">pga_player_results</a></span><span class="op">(</span><span class="st">"52955"</span><span class="op">)</span></span>
+<span><span class="va">results</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tournament"</span>, <span class="st">"pos"</span>, <span class="st">"total"</span>, <span class="st">"to_par"</span>, <span class="st">"winnings"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt; # A tibble: 6 × 5</span></span>
+<span><span class="co">#&gt;    tournament                 pos   total to_par winnings</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;                      &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;</span></span>
+<span><span class="co">#&gt;  1 The American Express       W/D   135   -9     $-</span></span>
+<span><span class="co">#&gt;  2 Farmers Insurance Open     CUT   150   +6     $-</span></span>
+<span><span class="co">#&gt;  3 AT&amp;T Pebble Beach Pro-Am   T37   277   -11    $78,375</span></span>
+<span><span class="co">#&gt;  4 The Genesis Invitational   T20   275   -9     $259,500</span></span>
+<span><span class="co">#&gt;  5 Arnold Palmer Invitational T3    276   -12    $1,200,000</span></span>
+<span><span class="co">#&gt;  6 THE PLAYERS Championship   T5    279   -9     $925,000</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="career-bio-and-tournament-status">Career, Bio, and Tournament Status<a class="anchor" aria-label="anchor" href="#career-bio-and-tournament-status"></a>
+</h3>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Career achievements</span></span>
+<span><span class="fu"><a href="../reference/pga_player_career.html">pga_player_career</a></span><span class="op">(</span><span class="st">"52955"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Biographical text and amateur highlights</span></span>
+<span><span class="va">bio</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pga_player_bio.html">pga_player_bio</a></span><span class="op">(</span><span class="st">"52955"</span><span class="op">)</span></span>
+<span><span class="va">bio</span><span class="op">$</span><span class="va">text</span>  <span class="co"># Character vector of bio paragraphs</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">bio</span><span class="op">$</span><span class="va">amateur_highlights</span><span class="op">)</span>  <span class="co"># 19 amateur achievements</span></span>
+<span></span>
+<span><span class="co"># Is a player in the current tournament?</span></span>
+<span><span class="fu"><a href="../reference/pga_player_tournament_status.html">pga_player_tournament_status</a></span><span class="op">(</span><span class="st">"39971"</span><span class="op">)</span>  <span class="co"># Sungjae Im</span></span>
+<span><span class="co">#&gt; # A tibble: 1 × 11</span></span>
+<span><span class="co">#&gt;    player_id tournament_name      position thru  score total</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;     &lt;chr&gt;                &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;</span></span>
+<span><span class="co">#&gt;  1 39971     Valspar Championship 1        F     -7    -7</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
 <h2 id="statistics">Statistics<a class="anchor" aria-label="anchor" href="#statistics"></a>
 </h2>
 <div class="section level3">
@@ -284,7 +365,7 @@ functions use the full ID (<code>"R2026475"</code>).</p>
 </h3>
 <p>pgatouR gives you access to 300+ PGA Tour statistics going back to
 2004. Every stat has a unique ID:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Strokes Gained: Total</span></span>
 <span><span class="va">sg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pga_stats.html">pga_stats</a></span><span class="op">(</span><span class="st">"02675"</span><span class="op">)</span></span>
 <span><span class="va">sg</span></span>
@@ -296,7 +377,7 @@ functions use the full ID (<code>"R2026475"</code>).</p>
 <span><span class="co">#&gt;  3     3 Scottie Scheffler United States    ...</span></span>
 <span><span class="co">#&gt;  ...</span></span></code></pre></div>
 <p>The result includes metadata as attributes:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">sg</span>, <span class="st">"stat_title"</span><span class="op">)</span>       <span class="co"># "SG: Total"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">sg</span>, <span class="st">"stat_description"</span><span class="op">)</span> <span class="co"># Full description text</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">sg</span>, <span class="st">"tour_avg"</span><span class="op">)</span>         <span class="co"># "0.000"</span></span>
@@ -307,7 +388,7 @@ functions use the full ID (<code>"R2026475"</code>).</p>
 </h3>
 <p>The package includes a bundled <code>stat_ids</code> dataset with all
 340 known stat IDs:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># All strokes gained stats</span></span>
 <span><span class="va">stat_ids</span><span class="op">[</span><span class="va">stat_ids</span><span class="op">$</span><span class="va">category</span> <span class="op">==</span> <span class="st">"Strokes Gained"</span>, <span class="op">]</span></span>
 <span><span class="co">#&gt; # A tibble: 6 × 4</span></span>
@@ -333,7 +414,7 @@ functions use the full ID (<code>"R2026475"</code>).</p>
 <h3 id="historical-comparisons">Historical Comparisons<a class="anchor" aria-label="anchor" href="#historical-comparisons"></a>
 </h3>
 <p>Pull the same stat across multiple years:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dd_2026</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pga_stats.html">pga_stats</a></span><span class="op">(</span><span class="st">"101"</span>, year <span class="op">=</span> <span class="fl">2026</span><span class="op">)</span>  <span class="co"># Driving Distance</span></span>
 <span><span class="va">dd_2020</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pga_stats.html">pga_stats</a></span><span class="op">(</span><span class="st">"101"</span>, year <span class="op">=</span> <span class="fl">2020</span><span class="op">)</span></span>
 <span><span class="va">dd_2015</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pga_stats.html">pga_stats</a></span><span class="op">(</span><span class="st">"101"</span>, year <span class="op">=</span> <span class="fl">2015</span><span class="op">)</span></span></code></pre></div>
@@ -405,7 +486,7 @@ functions use the full ID (<code>"R2026475"</code>).</p>
 </h2>
 <p>Get the full season schedule with dates, purse, course info,
 champions, and FedExCup points:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schedule</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pga_schedule.html">pga_schedule</a></span><span class="op">(</span><span class="fl">2026</span><span class="op">)</span></span>
 <span><span class="va">schedule</span></span>
 <span><span class="co">#&gt; # A tibble: 48 × 15</span></span>
@@ -428,7 +509,7 @@ champions, and FedExCup points:</p>
 <div class="section level2">
 <h2 id="fedexcup-standings">FedExCup Standings<a class="anchor" aria-label="anchor" href="#fedexcup-standings"></a>
 </h2>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pga_fedex_cup.html">pga_fedex_cup</a></span><span class="op">(</span><span class="fl">2026</span><span class="op">)</span></span>
 <span><span class="va">fc</span></span>
 <span><span class="co">#&gt; # A tibble: 192 × 14</span></span>
@@ -443,7 +524,7 @@ champions, and FedExCup points:</p>
 <h2 id="player-directory">Player Directory<a class="anchor" aria-label="anchor" href="#player-directory"></a>
 </h2>
 <p>The full player directory has 2,400+ players across all tours:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">players</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pga_players.html">pga_players</a></span><span class="op">(</span><span class="st">"R"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">players</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 2486</span></span>
@@ -459,7 +540,7 @@ champions, and FedExCup points:</p>
 <div class="section level2">
 <h2 id="news">News<a class="anchor" aria-label="anchor" href="#news"></a>
 </h2>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Latest articles</span></span>
 <span><span class="va">news</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pga_news.html">pga_news</a></span><span class="op">(</span>limit <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="va">news</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"headline"</span>, <span class="st">"publish_date"</span>, <span class="st">"franchise_display_name"</span><span class="op">)</span><span class="op">]</span></span>

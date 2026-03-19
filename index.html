@@ -190,6 +190,46 @@
 </table>
 </div>
 <div class="section level3">
+<h3 id="player-profiles">Player Profiles<a class="anchor" aria-label="anchor" href="#player-profiles"></a>
+</h3>
+<table class="table">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead><tr class="header">
+<th>Function</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>pga_player_profile(player_id)</code></td>
+<td>Overview with career highlights, wins, earnings, world rank, bio basics</td>
+</tr>
+<tr class="even">
+<td><code>pga_player_career(player_id)</code></td>
+<td>Career achievements: starts, cuts, wins, finish distribution, earnings</td>
+</tr>
+<tr class="odd">
+<td><code>pga_player_results(player_id)</code></td>
+<td>Tournament-by-tournament results with round scores, FedExCup points, earnings</td>
+</tr>
+<tr class="even">
+<td><code>pga_player_stats(player_id)</code></td>
+<td>Full stat profile (131 stats with ranks) in a single call</td>
+</tr>
+<tr class="odd">
+<td><code>pga_player_bio(player_id)</code></td>
+<td>Biographical text, amateur highlights</td>
+</tr>
+<tr class="even">
+<td><code>pga_player_tournament_status(player_id)</code></td>
+<td>Live tournament status (position, score, thru) if currently playing</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
 <h3 id="content">Content<a class="anchor" aria-label="anchor" href="#content"></a>
 </h3>
 <table class="table">
@@ -274,9 +314,39 @@
 <h2 id="detailed-examples">Detailed Examples<a class="anchor" aria-label="anchor" href="#detailed-examples"></a>
 </h2>
 <div class="section level3">
-<h3 id="strokes-gained-analysis">Strokes Gained Analysis<a class="anchor" aria-label="anchor" href="#strokes-gained-analysis"></a>
+<h3 id="player-profiles-1">Player Profiles<a class="anchor" aria-label="anchor" href="#player-profiles-1"></a>
 </h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://walrusquant.github.io/pgatouR/">pgatouR</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Full profile overview</span></span>
+<span><span class="va">profile</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_player_profile.html">pga_player_profile</a></span><span class="op">(</span><span class="st">"52955"</span><span class="op">)</span>  <span class="co"># Ludvig Aberg</span></span>
+<span><span class="va">profile</span><span class="op">$</span><span class="va">first_name</span>  <span class="co"># "Ludvig"</span></span>
+<span><span class="va">profile</span><span class="op">$</span><span class="va">highlights</span>  <span class="co"># tibble: PGA TOUR Wins, FedExCup rank, World Rank</span></span>
+<span><span class="va">profile</span><span class="op">$</span><span class="va">overview</span>    <span class="co"># tibble: career/season/bio/stats summary</span></span>
+<span></span>
+<span><span class="co"># 131 stats in one call (way faster than pulling individually)</span></span>
+<span><span class="va">stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_player_stats.html">pga_player_stats</a></span><span class="op">(</span><span class="st">"52955"</span><span class="op">)</span></span>
+<span><span class="va">stats</span><span class="op">[</span><span class="va">stats</span><span class="op">$</span><span class="va">stat_id</span> <span class="op">==</span> <span class="st">"02675"</span>, <span class="op">]</span>  <span class="co"># SG: Total — rank 13, value 1.245</span></span>
+<span></span>
+<span><span class="co"># Tournament results this season</span></span>
+<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_player_results.html">pga_player_results</a></span><span class="op">(</span><span class="st">"52955"</span><span class="op">)</span></span>
+<span><span class="va">results</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tournament"</span>, <span class="st">"pos"</span>, <span class="st">"total"</span>, <span class="st">"to_par"</span>, <span class="st">"winnings"</span><span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span><span class="co"># Career achievements</span></span>
+<span><span class="fu"><a href="reference/pga_player_career.html">pga_player_career</a></span><span class="op">(</span><span class="st">"52955"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Bio and amateur highlights</span></span>
+<span><span class="va">bio</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_player_bio.html">pga_player_bio</a></span><span class="op">(</span><span class="st">"52955"</span><span class="op">)</span></span>
+<span><span class="va">bio</span><span class="op">$</span><span class="va">text</span>  <span class="co"># paragraphs of biographical text</span></span>
+<span></span>
+<span><span class="co"># Is a player in the current tournament?</span></span>
+<span><span class="fu"><a href="reference/pga_player_tournament_status.html">pga_player_tournament_status</a></span><span class="op">(</span><span class="st">"39971"</span><span class="op">)</span>  <span class="co"># Sungjae Im — position, score, thru</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="strokes-gained-analysis">Strokes Gained Analysis<a class="anchor" aria-label="anchor" href="#strokes-gained-analysis"></a>
+</h3>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://walrusquant.github.io/pgatouR/">pgatouR</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Get all six strokes gained categories</span></span>
@@ -296,7 +366,7 @@
 <div class="section level3">
 <h3 id="finding-stats">Finding Stats<a class="anchor" aria-label="anchor" href="#finding-stats"></a>
 </h3>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Browse the stat_ids dataset</span></span>
 <span><span class="va">stat_ids</span><span class="op">[</span><span class="va">stat_ids</span><span class="op">$</span><span class="va">category</span> <span class="op">==</span> <span class="st">"Putting"</span>, <span class="op">]</span></span>
 <span></span>
@@ -309,7 +379,7 @@
 <div class="section level3">
 <h3 id="historical-data">Historical Data<a class="anchor" aria-label="anchor" href="#historical-data"></a>
 </h3>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Driving distance over the years</span></span>
 <span><span class="va">dd_2024</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_stats.html">pga_stats</a></span><span class="op">(</span><span class="st">"101"</span>, year <span class="op">=</span> <span class="fl">2024</span><span class="op">)</span></span>
 <span><span class="va">dd_2020</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_stats.html">pga_stats</a></span><span class="op">(</span><span class="st">"101"</span>, year <span class="op">=</span> <span class="fl">2020</span><span class="op">)</span></span>
@@ -326,7 +396,7 @@
 <div class="section level3">
 <h3 id="live-tournament-tracking">Live Tournament Tracking<a class="anchor" aria-label="anchor" href="#live-tournament-tracking"></a>
 </h3>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Full tournament picture</span></span>
 <span><span class="va">tournament</span>  <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_tournaments.html">pga_tournaments</a></span><span class="op">(</span><span class="st">"R2026475"</span><span class="op">)</span></span>
 <span><span class="va">leaderboard</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_leaderboard.html">pga_leaderboard</a></span><span class="op">(</span><span class="st">"R2026475"</span><span class="op">)</span></span>
@@ -343,7 +413,7 @@
 <div class="section level3">
 <h3 id="player-research">Player Research<a class="anchor" aria-label="anchor" href="#player-research"></a>
 </h3>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get all PGA Tour players</span></span>
 <span><span class="va">players</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_players.html">pga_players</a></span><span class="op">(</span><span class="st">"R"</span><span class="op">)</span></span>
 <span></span>
@@ -356,7 +426,7 @@
 <div class="section level3">
 <h3 id="news--video-content">News &amp; Video Content<a class="anchor" aria-label="anchor" href="#news--video-content"></a>
 </h3>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Latest news</span></span>
 <span><span class="va">news</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_news.html">pga_news</a></span><span class="op">(</span>limit <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span></span>

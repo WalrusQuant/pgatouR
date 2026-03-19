@@ -35,6 +35,21 @@
 - [`pga_schedule()`](https://walrusquant.github.io/pgatouR/reference/pga_schedule.md)
   : Get season schedule
 
+## Player Profiles
+
+- [`pga_player_profile()`](https://walrusquant.github.io/pgatouR/reference/pga_player_profile.md)
+  : Get player profile overview
+- [`pga_player_career()`](https://walrusquant.github.io/pgatouR/reference/pga_player_career.md)
+  : Get player career data
+- [`pga_player_results()`](https://walrusquant.github.io/pgatouR/reference/pga_player_results.md)
+  : Get player tournament results
+- [`pga_player_stats()`](https://walrusquant.github.io/pgatouR/reference/pga_player_stats.md)
+  : Get player stats profile
+- [`pga_player_bio()`](https://walrusquant.github.io/pgatouR/reference/pga_player_bio.md)
+  : Get player bio
+- [`pga_player_tournament_status()`](https://walrusquant.github.io/pgatouR/reference/pga_player_tournament_status.md)
+  : Get player tournament status
+
 ## Content
 
 - [`pga_news()`](https://walrusquant.github.io/pgatouR/reference/pga_news.md)
