@@ -28,6 +28,7 @@ Content-Type: application/json
 | Endpoint | Description |
 |----------|-------------|
 | `GET https://data-api.pgatour.com/player/list/{tourCode}` | Full player directory (2,486 players for PGA Tour) |
+| `GET https://data-api.pgatour.com/schedule/{tourCode}/{year}` | Full season schedule (48 events for 2026) with dates, purse, course, champion |
 | `GET https://data-api.pgatour.com/odds/interactivity` | Odds interactivity config |
 | `GET https://data-api.pgatour.com/content/watch/speedRounds/{tourCode}` | Speed rounds content |
 

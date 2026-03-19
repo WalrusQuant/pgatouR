@@ -12,21 +12,18 @@ pga_schedule(year = as.integer(format(Sys.Date(), "\%Y")), tour = "R")
 \item{tour}{Character. Tour code. Defaults to \code{"R"}.}
 }
 \value{
-A tibble with \code{tournament_id} and \code{tournament_name} columns,
-ordered from most recent to earliest in the season.
+A tibble with one row per tournament.
 }
 \description{
-Returns the tournament schedule for a season, pulled from the FedExCup
-standings tournament pills. For in-progress seasons, only tournaments
-played so far will be listed. For completed seasons, the full schedule
-is returned.
+Returns the full tournament schedule for a season including dates,
+status, purse, course, champion, and FedExCup points.
 }
 \examples{
 \dontrun{
-# Current season (in-progress, shows completed events)
+# Current season
 pga_schedule(2026)
 
-# Full past season
+# Past season
 pga_schedule(2025)
 }
 }

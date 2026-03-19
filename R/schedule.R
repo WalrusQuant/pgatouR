@@ -1,44 +1,60 @@
 #' Get season schedule
 #'
-#' Returns the tournament schedule for a season, pulled from the FedExCup
-#' standings tournament pills. For in-progress seasons, only tournaments
-#' played so far will be listed. For completed seasons, the full schedule
-#' is returned.
+#' Returns the full tournament schedule for a season including dates,
+#' status, purse, course, champion, and FedExCup points.
 #'
 #' @param year Integer. Season year. Defaults to current year.
 #' @param tour Character. Tour code. Defaults to `"R"`.
-#' @return A tibble with `tournament_id` and `tournament_name` columns,
-#'   ordered from most recent to earliest in the season.
+#' @return A tibble with one row per tournament.
 #' @export
 #' @examples
 #' \dontrun{
-#' # Current season (in-progress, shows completed events)
+#' # Current season
 #' pga_schedule(2026)
 #'
-#' # Full past season
+#' # Past season
 #' pga_schedule(2025)
 #' }
 pga_schedule <- function(year = as.integer(format(Sys.Date(), "%Y")),
                          tour = "R") {
   validate_tour_code(tour)
 
-  data <- pga_graphql_request(
-    "TourCupSplit",
-    list(tourCode = tour, id = "02671", year = as.integer(year))
-  )
+  resp <- pga_rest_request(paste0("schedule/", tour, "/", year))
+  tournaments <- resp$tournaments
 
-  cup <- data$tourCupSplit
-  if (is.null(cup)) {
-    cli_abort("No schedule data returned for {.val {year}}.")
-  }
-
-  pills <- cup$tournamentPills
-  if (is.null(pills) || length(pills) == 0) {
+  if (is.null(tournaments) || length(tournaments) == 0) {
     return(tibble())
   }
 
   tibble(
-    tournament_id = vapply(pills, function(p) p$tournamentId %||% NA_character_, character(1)),
-    tournament_name = vapply(pills, function(p) p$displayName %||% NA_character_, character(1))
+    tournament_id = vapply(tournaments, function(t) t$tournamentId %||% NA_character_, character(1)),
+    tournament_name = vapply(tournaments, function(t) t$name %||% NA_character_, character(1)),
+    year = vapply(tournaments, function(t) t$year %||% NA_character_, character(1)),
+    month = vapply(tournaments, function(t) t$month %||% NA_character_, character(1)),
+    display_date = vapply(tournaments, function(t) t$displayDate %||% NA_character_, character(1)),
+    status = vapply(tournaments, function(t) t$status %||% NA_character_, character(1)),
+    purse = vapply(tournaments, function(t) t$purse %||% NA_character_, character(1)),
+    fedex_cup_points = vapply(tournaments, function(t) {
+      safe_pluck(t, "standings", "value") %||% NA_character_
+    }, character(1)),
+    champion = vapply(tournaments, function(t) {
+      champs <- t$champions
+      if (is.null(champs) || length(champs) == 0) return(NA_character_)
+      champs[[1]]$displayName %||% NA_character_
+    }, character(1)),
+    champion_earnings = vapply(tournaments, function(t) t$championEarnings %||% NA_character_, character(1)),
+    course_name = vapply(tournaments, function(t) {
+      safe_pluck(t, "courseData", "name") %||% NA_character_
+    }, character(1)),
+    city = vapply(tournaments, function(t) {
+      safe_pluck(t, "courseData", "city") %||% NA_character_
+    }, character(1)),
+    state = vapply(tournaments, function(t) {
+      safe_pluck(t, "courseData", "stateCode") %||% NA_character_
+    }, character(1)),
+    country = vapply(tournaments, function(t) {
+      safe_pluck(t, "courseData", "country") %||% NA_character_
+    }, character(1)),
+    tournament_site_url = vapply(tournaments, function(t) t$tournamentSiteUrl %||% NA_character_, character(1))
   )
 }

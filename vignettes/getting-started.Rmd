@@ -40,18 +40,15 @@ Most functions need a tournament ID. These follow the format `{tour_code}{year}{
 You can find these from PGA Tour URLs or by using `pga_schedule()` to list all tournaments for a season:
 
 ```{r schedule-ids}
-# Full 2025 season (50 events with IDs and names)
-pga_schedule(2025)
-#> # A tibble: 50 × 2
-#>    tournament_id tournament_name
-#>    <chr>         <chr>
-#>  1 088           PGA TOUR Q-School presented by Korn Ferry
-#>  2 551           Grant Thornton Invitational
-#>  3 478           Hero World Challenge
-#>  ...
-
-# Current season (shows completed events so far)
+# Full season schedule with dates, purse, course, champion
 pga_schedule(2026)
+#> # A tibble: 48 × 15
+#>    tournament_id tournament_name       display_date status    purse     ...
+#>    <chr>         <chr>                 <chr>        <chr>     <chr>     ...
+#>  1 R2026006      Sony Open in Hawaii   Jan 15 - 18  COMPLETED $9,100,000
+#>  2 R2026002      The American Express  Jan 22 - 25  COMPLETED $9,200,000
+#>  3 R2026004      Farmers Insurance Op… Jan 29 - F…  COMPLETED $9,600,000
+#>  ...
 ```
 
 The tour code prefix tells you which tour:
@@ -297,23 +294,27 @@ Here are the ones you'll probably use most:
 
 ## Season Schedule
 
-Get tournament IDs and names for any season. Past seasons return the full schedule; the current season returns events played so far.
+Get the full season schedule with dates, purse, course info, champions, and FedExCup points:
 
 ```{r schedule}
-# Full 2025 season
-schedule <- pga_schedule(2025)
+schedule <- pga_schedule(2026)
 schedule
-#> # A tibble: 50 × 2
-#>    tournament_id tournament_name
-#>    <chr>         <chr>
-#>  1 088           PGA TOUR Q-School presented by Korn Ferry
-#>  2 551           Grant Thornton Invitational
-#>  3 478           Hero World Challenge
+#> # A tibble: 48 × 15
+#>    tournament_id tournament_name       display_date status    purse
+#>    <chr>         <chr>                 <chr>        <chr>     <chr>
+#>  1 R2026006      Sony Open in Hawaii   Jan 15 - 18  COMPLETED $9,100,000
+#>  2 R2026002      The American Express  Jan 22 - 25  COMPLETED $9,200,000
 #>  ...
 
-# Use the IDs with other functions
-# (prepend tour code + year, e.g., "R2025016" for The Sentry)
-pga_leaderboard("R2025016")
+# See champions and earnings for completed events
+schedule[schedule$status == "COMPLETED",
+         c("tournament_name", "champion", "champion_earnings")]
+
+# Use tournament IDs with other functions
+pga_leaderboard("R2026006")
+
+# Past seasons work too
+pga_schedule(2025)
 ```
 
 ## FedExCup Standings
