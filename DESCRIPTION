@@ -1,0 +1,29 @@
+Package: pgatouR
+Title: R Client for the PGA Tour API
+Version: 0.1.0
+Authors@R:
+    person("Adam", "Wickwire", role = c("aut", "cre"),
+           email = "adam@adamwickwire.com")
+Description: Access PGA Tour leaderboards, player stats, scorecards, shot
+    tracking data, tee times, FedExCup standings, odds, and more. Wraps
+    the PGA Tour GraphQL and REST APIs, returning tidy tibbles.
+License: MIT + file LICENSE
+URL: https://github.com/WalrusQuant/pgatouR
+BugReports: https://github.com/WalrusQuant/pgatouR/issues
+Depends:
+    R (>= 4.1.0)
+Imports:
+    httr2 (>= 1.0.0),
+    jsonlite,
+    tibble,
+    cli
+Suggests:
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
