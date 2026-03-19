@@ -29,6 +29,11 @@ Content-Type: application/json
 |----------|-------------|
 | `GET https://data-api.pgatour.com/player/list/{tourCode}` | Full player directory (2,486 players for PGA Tour) |
 | `GET https://data-api.pgatour.com/schedule/{tourCode}/{year}` | Full season schedule (48 events for 2026) with dates, purse, course, champion |
+| `GET https://data-api.pgatour.com/player/profiles/{playerId}` | Player profile overview (career highlights, bio basics, overview stats) |
+| `GET https://data-api.pgatour.com/player/profiles/{playerId}/career` | Career achievements (starts, cuts, wins, finishes, earnings) |
+| `GET https://data-api.pgatour.com/player/profiles/{playerId}/results` | Tournament-by-tournament results with round scores |
+| `GET https://data-api.pgatour.com/player/profiles/{playerId}/stats` | Full stat profile (131 stats with ranks, values, categories) |
+| `GET https://data-api.pgatour.com/player/profiles/{playerId}/bio` | Biographical text, amateur highlights |
 | `GET https://data-api.pgatour.com/odds/interactivity` | Odds interactivity config |
 | `GET https://data-api.pgatour.com/content/watch/speedRounds/{tourCode}` | Speed rounds content |
 

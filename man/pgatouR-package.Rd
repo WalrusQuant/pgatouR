@@ -11,6 +11,7 @@ Access PGA Tour leaderboards, player stats, scorecards, shot tracking data, tee 
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://walrusquant.github.io/pgatouR/}
   \item \url{https://github.com/WalrusQuant/pgatouR}
   \item Report bugs at \url{https://github.com/WalrusQuant/pgatouR/issues}
 }

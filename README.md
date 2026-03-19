@@ -63,6 +63,17 @@ pga_schedule(2025)
 | `pga_tournaments(ids)` | Tournament metadata including location, courses, weather, and format |
 | `pga_schedule(year, tour)` | Full season schedule with dates, purse, course, champion, and FedExCup points |
 
+### Player Profiles
+
+| Function | Description |
+|---|---|
+| `pga_player_profile(player_id)` | Overview with career highlights, wins, earnings, world rank, bio basics |
+| `pga_player_career(player_id)` | Career achievements: starts, cuts, wins, finish distribution, earnings |
+| `pga_player_results(player_id)` | Tournament-by-tournament results with round scores, FedExCup points, earnings |
+| `pga_player_stats(player_id)` | Full stat profile (131 stats with ranks) in a single call |
+| `pga_player_bio(player_id)` | Biographical text, amateur highlights |
+| `pga_player_tournament_status(player_id)` | Live tournament status (position, score, thru) if currently playing |
+
 ### Content
 
 | Function | Description |
@@ -93,6 +104,36 @@ Tournament IDs follow the format `{tour_code}{year}{tournament_number}`, e.g., `
 You can find tournament IDs from the PGA Tour website URL or by checking the leaderboard/schedule pages. The `pga_tournaments()` function can retrieve metadata for known IDs.
 
 ## Detailed Examples
+
+### Player Profiles
+
+```r
+library(pgatouR)
+
+# Full profile overview
+profile <- pga_player_profile("52955")  # Ludvig Aberg
+profile$first_name  # "Ludvig"
+profile$highlights  # tibble: PGA TOUR Wins, FedExCup rank, World Rank
+profile$overview    # tibble: career/season/bio/stats summary
+
+# 131 stats in one call (way faster than pulling individually)
+stats <- pga_player_stats("52955")
+stats[stats$stat_id == "02675", ]  # SG: Total — rank 13, value 1.245
+
+# Tournament results this season
+results <- pga_player_results("52955")
+results[, c("tournament", "pos", "total", "to_par", "winnings")]
+
+# Career achievements
+pga_player_career("52955")
+
+# Bio and amateur highlights
+bio <- pga_player_bio("52955")
+bio$text  # paragraphs of biographical text
+
+# Is a player in the current tournament?
+pga_player_tournament_status("39971")  # Sungjae Im — position, score, thru
+```
 
 ### Strokes Gained Analysis
 

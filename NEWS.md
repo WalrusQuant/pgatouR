@@ -23,6 +23,14 @@ Initial release.
 - `pga_tournaments()` — Tournament metadata including location, courses, weather, and format
 - `pga_schedule()` — Full season schedule with dates, purse, course, champion, and FedExCup points
 
+### Player Profiles
+- `pga_player_profile()` — Overview with career highlights, wins, earnings, world rank, bio basics
+- `pga_player_career()` — Career achievements: starts, cuts, wins, finish distribution, earnings
+- `pga_player_results()` — Tournament-by-tournament results with round scores and earnings
+- `pga_player_stats()` — Full stat profile (131 stats with ranks) in a single call
+- `pga_player_bio()` — Biographical text and amateur highlights
+- `pga_player_tournament_status()` — Live tournament status if currently playing
+
 ### Content
 - `pga_news()` — News articles with filtering and pagination
 - `pga_news_franchises()` — Available news categories

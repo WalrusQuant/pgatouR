@@ -36,6 +36,15 @@ reference:
       - pga_tournaments
       - pga_schedule
 
+  - title: Player Profiles
+    contents:
+      - pga_player_profile
+      - pga_player_career
+      - pga_player_results
+      - pga_player_stats
+      - pga_player_bio
+      - pga_player_tournament_status
+
   - title: Content
     contents:
       - pga_news
