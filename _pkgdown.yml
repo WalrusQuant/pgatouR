@@ -1,0 +1,47 @@
+url: https://walrusquant.github.io/pgatouR/
+
+template:
+  bootstrap: 5
+
+navbar:
+  structure:
+    left: [intro, reference, articles]
+    right: [search, github]
+  components:
+    github:
+      icon: fa-github
+      href: https://github.com/WalrusQuant/pgatouR
+
+reference:
+  - title: Live Tournament Data
+    contents:
+      - pga_leaderboard
+      - pga_current_leaders
+      - pga_tee_times
+      - pga_scorecard
+      - pga_shot_details
+      - pga_odds
+      - pga_coverage
+
+  - title: Statistics & Standings
+    contents:
+      - pga_stats
+      - pga_fedex_cup
+      - pga_scorecard_comparison
+
+  - title: Players & Tournaments
+    contents:
+      - pga_players
+      - pga_tournaments
+      - pga_schedule
+
+  - title: Content
+    contents:
+      - pga_news
+      - pga_news_franchises
+      - pga_videos
+      - pga_tourcast_videos
+
+  - title: Data
+    contents:
+      - stat_ids
