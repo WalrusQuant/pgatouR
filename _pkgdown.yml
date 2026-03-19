@@ -11,6 +11,7 @@ navbar:
     github:
       icon: fa-github
       href: https://github.com/WalrusQuant/pgatouR
+      aria-label: GitHub
 
 reference:
   - title: Live Tournament Data
