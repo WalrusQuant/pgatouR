@@ -28,6 +28,9 @@ pga_scorecard("R2026475", "39971")
 
 # Shot-level tracking with coordinates
 pga_shot_details("R2026475", "39971", round = 1)
+
+# Season schedule (50 events for a full season)
+pga_schedule(2025)
 ```
 
 ## Functions
@@ -58,6 +61,7 @@ pga_shot_details("R2026475", "39971", round = 1)
 |---|---|
 | `pga_players(tour)` | Full player directory with name, country, age, and active status |
 | `pga_tournaments(ids)` | Tournament metadata including location, courses, weather, and format |
+| `pga_schedule(year, tour)` | Season tournament list with IDs and names (full schedule for past seasons) |
 
 ### Content
 
@@ -134,6 +138,10 @@ dd_2015 <- pga_stats("101", year = 2015)
 # FedExCup standings from past seasons
 pga_fedex_cup(2025)
 pga_fedex_cup(2024)
+
+# Full season schedule
+schedule_2025 <- pga_schedule(2025)  # 50 events
+schedule_2026 <- pga_schedule(2026)  # in-progress, completed events only
 ```
 
 ### Live Tournament Tracking

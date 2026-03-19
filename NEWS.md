@@ -21,6 +21,7 @@ Initial release.
 ### Players & Tournaments
 - `pga_players()` — Full player directory (2,400+ players across PGA Tour, Champions, Korn Ferry)
 - `pga_tournaments()` — Tournament metadata including location, courses, weather, and format
+- `pga_schedule()` — Season tournament list with IDs and names (full schedule for past seasons)
 
 ### Content
 - `pga_news()` — News articles with filtering and pagination

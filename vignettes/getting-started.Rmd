@@ -37,7 +37,24 @@ Most functions need a tournament ID. These follow the format `{tour_code}{year}{
 - `"R2026003"` — 2026 Sentry (PGA Tour)
 - `"S2026003"` — A Champions Tour event
 
-You can find these from PGA Tour URLs or by inspecting network traffic on pgatour.com. The tour code prefix tells you which tour:
+You can find these from PGA Tour URLs or by using `pga_schedule()` to list all tournaments for a season:
+
+```{r schedule-ids}
+# Full 2025 season (50 events with IDs and names)
+pga_schedule(2025)
+#> # A tibble: 50 × 2
+#>    tournament_id tournament_name
+#>    <chr>         <chr>
+#>  1 088           PGA TOUR Q-School presented by Korn Ferry
+#>  2 551           Grant Thornton Invitational
+#>  3 478           Hero World Challenge
+#>  ...
+
+# Current season (shows completed events so far)
+pga_schedule(2026)
+```
+
+The tour code prefix tells you which tour:
 
 | Code | Tour |
 |------|------|
@@ -277,6 +294,27 @@ Here are the ones you'll probably use most:
 | `130`   | Scrambling |
 | `104`   | Putting Average |
 | `120`   | Scoring Average (Adjusted) |
+
+## Season Schedule
+
+Get tournament IDs and names for any season. Past seasons return the full schedule; the current season returns events played so far.
+
+```{r schedule}
+# Full 2025 season
+schedule <- pga_schedule(2025)
+schedule
+#> # A tibble: 50 × 2
+#>    tournament_id tournament_name
+#>    <chr>         <chr>
+#>  1 088           PGA TOUR Q-School presented by Korn Ferry
+#>  2 551           Grant Thornton Invitational
+#>  3 478           Hero World Challenge
+#>  ...
+
+# Use the IDs with other functions
+# (prepend tour code + year, e.g., "R2025016" for The Sentry)
+pga_leaderboard("R2025016")
+```
 
 ## FedExCup Standings
 
