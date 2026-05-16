@@ -4,29 +4,50 @@
 \alias{pga_stats}
 \title{Get PGA Tour statistics}
 \usage{
-pga_stats(stat_id, year = NULL, tour = "R")
+pga_stats(stat_id, year = NULL, tour = "R", event_query = NULL)
 }
 \arguments{
-\item{stat_id}{Character. Stat ID (e.g., \code{"02675"} for SG: Total).}
+\item{stat_id}{Character vector. One or more stat IDs (e.g., \code{"02675"} for
+SG: Total). When length > 1, results are stacked with a \code{stat_id} column.}
 
-\item{year}{Integer or NULL. Season year. Defaults to current season.}
+\item{year}{Integer vector or \code{NULL}. One or more season years. \code{NULL}
+(default) uses the current season. When length > 1, results are stacked
+with a \code{year} column.}
 
-\item{tour}{Character. Tour code. Defaults to \code{"R"}.}
+\item{tour}{Character. Tour code (\code{"R"}, \code{"S"}, or \code{"H"}). Defaults to \code{"R"}.}
+
+\item{event_query}{Optional named list passed through as the GraphQL
+\code{StatDetailEventQuery} variable (e.g., for "Last 5 events" or FedEx Fall
+filters). Most callers can leave this \code{NULL}.}
 }
 \value{
-A tibble with one row per player, including rank, player info,
-and stat values.
+A tibble with one row per player per (stat_id, year) request.
+Includes rank, player info, and stat value columns. Multi-stat results
+are stacked vertically; columns absent for a given stat are filled with
+\code{NA}.
 }
 \description{
 Returns player rankings for any of 300+ PGA Tour statistics.
 See \link{stat_ids} for a full list of available stat IDs.
 }
+\details{
+The upstream \code{StatDetails} operation accepts a single \code{statId} and a single
+\code{year} per request. When \code{stat_id} or \code{year} are passed as vectors, this
+function loops internally and row-binds the results, adding \code{stat_id} and
+\code{year} columns so chunks can be told apart.
+}
 \examples{
 \dontrun{
-# Strokes Gained: Total
+# Strokes Gained: Total, current season
 pga_stats("02675")
 
 # Driving Distance, 2024 season
 pga_stats("101", year = 2024)
+
+# Multiple stats in one call
+pga_stats(c("02675", "101"))
+
+# Multi-year SG: Total
+pga_stats("02675", year = 2022:2024)
 }
 }

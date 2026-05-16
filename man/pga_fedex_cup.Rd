@@ -4,12 +4,20 @@
 \alias{pga_fedex_cup}
 \title{Get FedExCup standings}
 \usage{
-pga_fedex_cup(year = as.integer(format(Sys.Date(), "\%Y")), tour = "R")
+pga_fedex_cup(
+  year = as.integer(format(Sys.Date(), "\%Y")),
+  tour = "R",
+  event_query = NULL
+)
 }
 \arguments{
 \item{year}{Integer. Season year. Defaults to current year.}
 
 \item{tour}{Character. Tour code. Defaults to \code{"R"}.}
+
+\item{event_query}{Optional named list passed through as the GraphQL
+\code{StatDetailEventQuery} variable (used for event/window filters). Most
+callers can leave this \code{NULL}.}
 }
 \value{
 A tibble with player standings including rank, points, and movement.

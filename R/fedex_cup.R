@@ -4,6 +4,9 @@
 #'
 #' @param year Integer. Season year. Defaults to current year.
 #' @param tour Character. Tour code. Defaults to `"R"`.
+#' @param event_query Optional named list passed through as the GraphQL
+#'   `StatDetailEventQuery` variable (used for event/window filters). Most
+#'   callers can leave this `NULL`.
 #' @return A tibble with player standings including rank, points, and movement.
 #' @export
 #' @examples
@@ -11,13 +14,14 @@
 #' pga_fedex_cup(2026)
 #' }
 pga_fedex_cup <- function(year = as.integer(format(Sys.Date(), "%Y")),
-                          tour = "R") {
+                          tour = "R",
+                          event_query = NULL) {
   validate_tour_code(tour)
 
-  data <- pga_graphql_request(
-    "TourCupSplit",
-    list(tourCode = tour, id = "02671", year = as.integer(year))
-  )
+  variables <- list(tourCode = tour, id = "02671", year = as.integer(year))
+  if (!is.null(event_query)) variables$eventQuery <- event_query
+
+  data <- pga_graphql_request("TourCupSplit", variables)
 
   cup <- data$tourCupSplit
   if (is.null(cup)) {

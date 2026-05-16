@@ -7,6 +7,22 @@ to_snake_case <- function(x) {
   tolower(out)
 }
 
+#' Sanitize free-form labels into unique snake_case column names
+#'
+#' Strips punctuation, collapses whitespace to underscores, lowercases, and
+#' applies `make.unique()` so duplicate labels get `_1`, `_2`, ... suffixes.
+#' Use this for API headers that may contain spaces, dots, or repeats.
+#' @param x Character vector.
+#' @return Character vector of unique snake_case names.
+#' @noRd
+make_unique_snake <- function(x) {
+  out <- to_snake_case(x)
+  out <- gsub("[^a-z0-9]+", "_", out)
+  out <- gsub("^_+|_+$", "", out)
+  out[!nzchar(out)] <- "col"
+  make.unique(out, sep = "_")
+}
+
 #' Clean column names of a data frame to snake_case
 #' @param df A data frame.
 #' @return The data frame with snake_case column names.
