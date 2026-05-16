@@ -83,6 +83,14 @@ od <- pga_graphql_request("oddsToWinCompressed",
                           list(tournamentId = TID))
 save_fixture("odds", od)
 
+# ---- Content / odds / speed-rounds fixtures ----
+save_fixture("content", pga_graphql_request(
+  "GenericContentCompressed",
+  list(path = "/content/dam/pga-tour/fragments/pages/fedexcup/fedexcup-overview")
+))
+save_fixture("odds_interactivity", pga_rest_request("odds/interactivity"))
+save_fixture("speed_rounds", pga_rest_request("content/watch/speedRounds/R"))
+
 # ---- REST fixtures ----
 save_fixture("players",          pga_rest_request("player/list/R"))
 save_fixture("schedule",         pga_rest_request(paste0("schedule/R/", YEAR)))
