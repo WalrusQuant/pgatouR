@@ -10,11 +10,14 @@ pga_player_results(player_id)
 \item{player_id}{Character. Player ID.}
 }
 \value{
-A tibble with one row per tournament.
+A tibble with one row per tournament. Includes a \code{season} column
+(the season label or index from the API response).
 }
 \description{
-Returns a player's tournament-by-tournament results for a season
-including round scores, finish position, FedExCup points, and earnings.
+Returns a player's tournament-by-tournament results, including round
+scores, finish position, FedExCup points, and earnings. If the upstream
+response contains multiple seasons, all are returned and tagged with a
+\code{season} column.
 }
 \examples{
 \dontrun{

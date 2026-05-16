@@ -34,7 +34,8 @@ pga_shot_details <- function(tournament_id, player_id, round,
   parsed <- pga_decompress(payload)
   holes <- parsed$holes
 
-  if (is.null(holes) || nrow(holes) == 0) {
+  if (is.null(holes) || length(holes) == 0 || !is.data.frame(holes) ||
+      nrow(holes) == 0) {
     return(tibble())
   }
 
@@ -80,5 +81,5 @@ pga_shot_details <- function(tournament_id, player_id, round,
     return(tibble())
   }
 
-  do.call(rbind, all_strokes)
+  do.call(vec_rbind, all_strokes)
 }

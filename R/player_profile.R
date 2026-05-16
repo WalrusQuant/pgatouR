@@ -4,8 +4,10 @@
 #' wins, earnings, world ranking, FedExCup standing, and bio basics.
 #'
 #' @param player_id Character. Player ID (e.g., `"52955"` for Ludvig Aberg).
-#' @return A named list with `summary` (tibble of career highlights) and
-#'   `bio` (list of biographical info).
+#' @return A named list with scalar bio fields (`player_id`, `first_name`,
+#'   `last_name`, `country`, `country_code`, `born`, `age`, `birthplace`,
+#'   `college`, `turned_pro`) plus two tibbles: `highlights` (career highlight
+#'   cards) and `overview` (overview-stats grid).
 #' @export
 #' @examples
 #' \dontrun{
@@ -58,7 +60,7 @@ pga_player_profile <- function(player_id) {
   }
 
   list(
-    player_id = resp$playerId,
+    player_id = resp$playerId %||% NA_character_,
     first_name = summary_data$firstName,
     last_name = summary_data$lastName,
     country = summary_data$country,
@@ -115,16 +117,19 @@ pga_player_career <- function(player_id) {
   }
 
   if (length(rows) == 0) return(tibble())
-  do.call(rbind, rows)
+  do.call(vec_rbind, rows)
 }
 
 #' Get player tournament results
 #'
-#' Returns a player's tournament-by-tournament results for a season
-#' including round scores, finish position, FedExCup points, and earnings.
+#' Returns a player's tournament-by-tournament results, including round
+#' scores, finish position, FedExCup points, and earnings. If the upstream
+#' response contains multiple seasons, all are returned and tagged with a
+#' `season` column.
 #'
 #' @param player_id Character. Player ID.
-#' @return A tibble with one row per tournament.
+#' @return A tibble with one row per tournament. Includes a `season` column
+#'   (the season label or index from the API response).
 #' @export
 #' @examples
 #' \dontrun{
@@ -138,15 +143,22 @@ pga_player_results <- function(player_id) {
     return(tibble())
   }
 
-  results <- results_list[[1]]
-  headers <- results$headers
-  data_rows <- results$data
+  season_tibbles <- lapply(seq_along(results_list), function(i) {
+    season_obj <- results_list[[i]]
+    season_label <- season_obj$season %||% season_obj$year %||%
+      season_obj$displaySeason %||% as.character(i)
+    parse_player_results_season(season_obj, season_label)
+  })
 
-  if (is.null(data_rows) || length(data_rows) == 0) {
-    return(tibble())
-  }
+  do.call(vec_rbind, season_tibbles)
+}
 
-  # Build header labels
+# Parse one season of player results into a tibble with a `season` column.
+parse_player_results_season <- function(season_obj, season_label) {
+  headers <- season_obj$headers
+  data_rows <- season_obj$data
+  if (is.null(data_rows) || length(data_rows) == 0) return(tibble())
+
   header_labels <- character()
   for (h in headers) {
     if (!is.null(h$label)) {
@@ -154,28 +166,31 @@ pga_player_results <- function(player_id) {
     } else if (!is.null(h$labels)) {
       prefix <- h$groupLabel %||% ""
       for (sub in h$labels) {
-        header_labels <- c(header_labels, paste(prefix, sub))
+        header_labels <- c(header_labels, trimws(paste(prefix, sub)))
       }
     }
   }
+  col_names <- if (length(header_labels) > 0) {
+    make_unique_snake(header_labels)
+  } else {
+    character()
+  }
 
-  rows <- list()
-  for (d in data_rows) {
+  rows <- lapply(data_rows, function(d) {
     fields <- d$fields
-    row <- list(tournament_id = d$tournamentId)
+    row <- list(
+      season = as.character(season_label),
+      tournament_id = d$tournamentId %||% NA_character_
+    )
     for (i in seq_along(fields)) {
-      col_name <- if (i <= length(header_labels)) {
-        to_snake_case(gsub("[^a-zA-Z0-9 ]", "", header_labels[i]))
-      } else {
-        paste0("field_", i)
-      }
-      row[[col_name]] <- fields[[i]]
+      nm <- if (i <= length(col_names)) col_names[i] else paste0("field_", i)
+      val <- fields[[i]]
+      row[[nm]] <- if (is.null(val)) NA_character_ else val
     }
-    rows[[length(rows) + 1]] <- as_tibble(row)
-  }
+    as_tibble(row)
+  })
 
-  if (length(rows) == 0) return(tibble())
-  do.call(rbind, rows)
+  do.call(vec_rbind, rows)
 }
 
 #' Get player stats profile
@@ -203,7 +218,9 @@ pga_player_stats <- function(player_id) {
   tibble(
     stat_id = vapply(stats, function(s) s$statId %||% NA_character_, character(1)),
     title = vapply(stats, function(s) s$title %||% NA_character_, character(1)),
-    rank = vapply(stats, function(s) s$rank %||% NA_character_, character(1)),
+    rank = vapply(stats, function(s) {
+      suppressWarnings(as.integer(s$rank %||% NA))
+    }, integer(1)),
     value = vapply(stats, function(s) s$value %||% NA_character_, character(1)),
     category = vapply(stats, function(s) {
       cats <- s$category
@@ -278,7 +295,7 @@ pga_player_bio <- function(player_id) {
   }
 
   widget_df <- if (length(widget_rows) > 0) {
-    do.call(rbind, widget_rows)
+    do.call(vec_rbind, widget_rows)
   } else {
     tibble()
   }
@@ -324,6 +341,8 @@ pga_player_tournament_status <- function(player_id) {
     total = status$total %||% NA_character_,
     round_display = status$roundDisplay %||% NA_character_,
     round_status = status$roundStatus %||% NA_character_,
+    round_status_display = status$roundStatusDisplay %||% NA_character_,
+    round_status_color = status$roundStatusColor %||% NA_character_,
     tee_time = status$teeTime %||% NA_character_,
     display_mode = status$displayMode %||% NA_character_
   )

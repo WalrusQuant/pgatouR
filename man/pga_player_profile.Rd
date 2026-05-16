@@ -10,8 +10,10 @@ pga_player_profile(player_id)
 \item{player_id}{Character. Player ID (e.g., \code{"52955"} for Ludvig Aberg).}
 }
 \value{
-A named list with \code{summary} (tibble of career highlights) and
-\code{bio} (list of biographical info).
+A named list with scalar bio fields (\code{player_id}, \code{first_name},
+\code{last_name}, \code{country}, \code{country_code}, \code{born}, \code{age}, \code{birthplace},
+\code{college}, \code{turned_pro}) plus two tibbles: \code{highlights} (career highlight
+cards) and \code{overview} (overview-stats grid).
 }
 \description{
 Returns a player's profile summary including career highlights,

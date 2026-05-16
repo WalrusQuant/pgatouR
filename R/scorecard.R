@@ -46,16 +46,17 @@ pga_scorecard <- function(tournament_id, player_id) {
       holes <- nine_data$holes
       if (is.null(holes)) next
 
-      # holes is a list-column; extract the data.frame
-      if (is.list(holes) && length(holes) > 0) {
-        holes_df <- holes[[1]]
-      } else if (is.data.frame(holes)) {
-        holes_df <- holes
+      # With simplifyVector = TRUE, holes is wrapped in a 1-element list
+      # whose only entry is the actual data.frame.
+      holes_df <- if (is.data.frame(holes)) {
+        holes
+      } else if (is.list(holes) && length(holes) >= 1 && is.data.frame(holes[[1]])) {
+        holes[[1]]
       } else {
         next
       }
 
-      if (!is.data.frame(holes_df) || nrow(holes_df) == 0) next
+      if (nrow(holes_df) == 0) next
 
       holes_df$round_number <- round_num
       holes_df$course_name <- course_name
@@ -70,7 +71,7 @@ pga_scorecard <- function(tournament_id, player_id) {
     return(tibble())
   }
 
-  result <- do.call(rbind, all_rows)
+  result <- do.call(vec_rbind, all_rows)
   result <- clean_names(as_tibble(result))
 
   # Reorder columns for clarity
