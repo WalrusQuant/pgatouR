@@ -30,7 +30,7 @@ pga_tee_times <- function(tournament_id) {
 
   tz <- parsed$timezone %||% "America/New_York"
 
-  all_rows <- list()
+  group_frames <- list()
 
   for (r in seq_len(nrow(rounds))) {
     round_info <- rounds[r, ]
@@ -41,11 +41,10 @@ pga_tee_times <- function(tournament_id) {
 
     if (is.null(groups) || length(groups) == 0) next
 
-    # groups may be a list column
-    if (is.data.frame(groups)) {
-      grps <- groups
-    } else if (is.list(groups) && length(groups) == 1) {
-      grps <- groups[[1]]
+    grps <- if (is.data.frame(groups)) {
+      groups
+    } else if (is.list(groups) && length(groups) == 1 && is.data.frame(groups[[1]])) {
+      groups[[1]]
     } else {
       next
     }
@@ -53,16 +52,17 @@ pga_tee_times <- function(tournament_id) {
     for (g in seq_len(nrow(grps))) {
       group <- grps[g, ]
       players <- group$players
-
       if (is.null(players) || length(players) == 0) next
 
-      if (is.data.frame(players)) {
-        p_df <- players
+      p_df <- if (is.data.frame(players)) {
+        players
       } else if (is.list(players) && length(players) == 1 && is.data.frame(players[[1]])) {
-        p_df <- players[[1]]
+        players[[1]]
       } else {
         next
       }
+      n <- nrow(p_df)
+      if (n == 0) next
 
       tee_time_ms <- group$teeTime
       tee_time <- if (!is.null(tee_time_ms) && !is.na(tee_time_ms)) {
@@ -71,28 +71,23 @@ pga_tee_times <- function(tournament_id) {
         as.POSIXct(NA)
       }
 
-      for (p in seq_len(nrow(p_df))) {
-        all_rows[[length(all_rows) + 1]] <- tibble(
-          round_number = round_num,
-          round_display = round_display,
-          round_status = round_status,
-          group_number = group$groupNumber,
-          tee_time = tee_time,
-          start_tee = group$startTee,
-          back_nine = group$backNine %||% FALSE,
-          player_id = p_df$id[p],
-          first_name = p_df$firstName[p],
-          last_name = p_df$lastName[p],
-          display_name = p_df$displayName[p],
-          country = p_df$country[p]
-        )
-      }
+      group_frames[[length(group_frames) + 1]] <- tibble(
+        round_number = rep(round_num, n),
+        round_display = rep(round_display, n),
+        round_status = rep(round_status, n),
+        group_number = rep(group$groupNumber, n),
+        tee_time = rep(tee_time, n),
+        start_tee = rep(group$startTee, n),
+        back_nine = rep(group$backNine %||% FALSE, n),
+        player_id = p_df$id %||% rep(NA_character_, n),
+        first_name = p_df$firstName %||% rep(NA_character_, n),
+        last_name = p_df$lastName %||% rep(NA_character_, n),
+        display_name = p_df$displayName %||% rep(NA_character_, n),
+        country = p_df$country %||% rep(NA_character_, n)
+      )
     }
   }
 
-  if (length(all_rows) == 0) {
-    return(tibble())
-  }
-
-  do.call(rbind, all_rows)
+  if (length(group_frames) == 0) return(tibble())
+  do.call(vec_rbind, group_frames)
 }
