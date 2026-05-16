@@ -1,6 +1,6 @@
 Package: pgatouR
 Title: R Client for the PGA Tour API
-Version: 0.1.0
+Version: 0.2.0
 Authors@R:
     person("Adam", "Wickwire", role = c("aut", "cre"),
            email = "adam@adamwickwire.com")
