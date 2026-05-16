@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pgatouR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,16 +36,16 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="pgatour-development-version">pgatouR (development version)<a class="anchor" aria-label="anchor" href="#pgatour-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.2.0" id="pgatour-020">pgatouR 0.2.0<a class="anchor" aria-label="anchor" href="#pgatour-020"></a></h2>
 <div class="section level3">
-<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<h3 id="breaking-changes-0-2-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-2-0"></a></h3>
 <ul><li>
 <code><a href="../reference/pga_player_tournament_status.html">pga_player_tournament_status()</a></code> now returns a zero-row tibble when the API has no status to report (player not currently in a tournament). It previously returned a one-row tibble with all <code>NA</code> columns. The column schema is unchanged.</li>
 <li>
 <code><a href="../reference/pga_stats.html">pga_stats()</a></code> no longer attaches metadata (<code>stat_title</code>, <code>tour_avg</code>, <code>year</code>, <code>display_season</code>) as attributes. <code>stat_title</code>, <code>stat_id</code>, and <code>year</code> are now real columns on the returned tibble; the other metadata was dropped (it was silently lost the moment any dplyr verb ran on the result anyway).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<h3 id="new-features-0-2-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-2-0"></a></h3>
 <ul><li>
 <code><a href="../reference/pga_stats.html">pga_stats()</a></code> accepts vectors for <code>stat_id</code> and <code>year</code>, looping internally and stacking results with <code>stat_id</code> and <code>year</code> columns.</li>
 <li>
@@ -57,7 +57,7 @@
 <code>PGATOUR_VERBOSE</code> env var enables request-level logging via <code>cli</code> for troubleshooting.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<h3 id="bug-fixes-0-2-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-2-0"></a></h3>
 <ul><li>
 <code><a href="../reference/pga_player_tournament_status.html">pga_player_tournament_status()</a></code>: fixed phantom <code>roundDisplay</code> mapping that was always <code>NA</code>. The fields actually returned by the API (<code>roundStatusDisplay</code>, <code>roundStatusColor</code>) are now surfaced as columns.</li>
 <li>
@@ -71,7 +71,7 @@
 <li>Header-derived column names that previously collided (e.g. two <code>"Rank"</code> labels in player results, free-form spaces in stat headers) are now deduplicated via <code>make_unique_snake()</code>.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="robustness--performance-development-version">Robustness / performance<a class="anchor" aria-label="anchor" href="#robustness--performance-development-version"></a></h3>
+<h3 id="robustness--performance-0-2-0">Robustness / performance<a class="anchor" aria-label="anchor" href="#robustness--performance-0-2-0"></a></h3>
 <ul><li>Transport now applies a 30-second <code>req_timeout()</code> and a three-try <code>req_retry()</code> on 408/429/5xx, so transient CDN failures recover automatically instead of failing the call.</li>
 <li>Non-JSON 200 responses are caught and surfaced with the operation name and status code, instead of crashing in <code>resp_body_json()</code>.</li>
 <li>
@@ -82,7 +82,7 @@
 <code><a href="../reference/pga_tournaments.html">pga_tournaments()</a></code> uses <code><a href="https://vctrs.r-lib.org/reference/vec_bind.html" class="external-link">vctrs::vec_rbind()</a></code> for the <code>courses</code> list-column so heterogeneous course schemas no longer silently fall back to an empty tibble.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="testing--infra-development-version">Testing / infra<a class="anchor" aria-label="anchor" href="#testing--infra-development-version"></a></h3>
+<h3 id="testing--infra-0-2-0">Testing / infra<a class="anchor" aria-label="anchor" href="#testing--infra-0-2-0"></a></h3>
 <ul><li>Added an offline test suite (89 tests across 10 files) that mocks <code>pga_graphql_request</code> / <code>pga_rest_request</code> against fixtures captured in <code>tests/testthat/fixtures/</code>. Re-capture with <code>Rscript data-raw/fixtures.R</code>.</li>
 <li>Added an <code>R-CMD-check</code> GitHub Actions workflow that runs on macOS and Ubuntu against R release, devel, and oldrel-1.</li>
 <li>
