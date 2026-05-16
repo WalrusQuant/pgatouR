@@ -74,6 +74,9 @@
 <span><span class="co"># Strokes Gained: Total rankings</span></span>
 <span><span class="fu"><a href="reference/pga_stats.html">pga_stats</a></span><span class="op">(</span><span class="st">"02675"</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># Multiple stats or multiple years in a single call</span></span>
+<span><span class="fu"><a href="reference/pga_stats.html">pga_stats</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"02675"</span>, <span class="st">"101"</span><span class="op">)</span>, year <span class="op">=</span> <span class="fl">2023</span><span class="op">:</span><span class="fl">2024</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># Full player directory (2,400+ players)</span></span>
 <span><span class="fu"><a href="reference/pga_players.html">pga_players</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -147,11 +150,11 @@
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><code>pga_stats(stat_id, year, tour)</code></td>
-<td>Any of 300+ stats with full player rankings (data from 2004-2026)</td>
+<td><code>pga_stats(stat_id, year, tour, event_query)</code></td>
+<td>Any of 300+ stats with full player rankings (data from 2004–2026). Accepts vectors of <code>stat_id</code> / <code>year</code> for batched requests.</td>
 </tr>
 <tr class="even">
-<td><code>pga_fedex_cup(year, tour)</code></td>
+<td><code>pga_fedex_cup(year, tour, event_query)</code></td>
 <td>FedExCup standings with projected and official rankings</td>
 </tr>
 <tr class="odd">
@@ -258,6 +261,18 @@
 <td><code>pga_tourcast_videos(tournament_id, player_id, round)</code></td>
 <td>Shot-by-shot video clips for a player’s round</td>
 </tr>
+<tr class="odd">
+<td><code>pga_speed_rounds(tour)</code></td>
+<td>Speed-rounds video index</td>
+</tr>
+<tr class="even">
+<td><code>pga_content(path)</code></td>
+<td>CMS content fragments (overview pages, hub copy) — returns a nested list</td>
+</tr>
+<tr class="odd">
+<td><code><a href="reference/pga_odds_interactivity.html">pga_odds_interactivity()</a></code></td>
+<td>Odds widget / book-partner configuration — returns a nested list</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -349,19 +364,14 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://walrusquant.github.io/pgatouR/">pgatouR</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Get all six strokes gained categories</span></span>
-<span><span class="va">sg_total</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_stats.html">pga_stats</a></span><span class="op">(</span><span class="st">"02675"</span><span class="op">)</span>        <span class="co"># SG: Total</span></span>
-<span><span class="va">sg_ott</span>   <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_stats.html">pga_stats</a></span><span class="op">(</span><span class="st">"02567"</span><span class="op">)</span>        <span class="co"># SG: Off-the-Tee</span></span>
-<span><span class="va">sg_app</span>   <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_stats.html">pga_stats</a></span><span class="op">(</span><span class="st">"02568"</span><span class="op">)</span>        <span class="co"># SG: Approach</span></span>
-<span><span class="va">sg_arg</span>   <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_stats.html">pga_stats</a></span><span class="op">(</span><span class="st">"02569"</span><span class="op">)</span>        <span class="co"># SG: Around-the-Green</span></span>
-<span><span class="va">sg_putt</span>  <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_stats.html">pga_stats</a></span><span class="op">(</span><span class="st">"02564"</span><span class="op">)</span>        <span class="co"># SG: Putting</span></span>
+<span><span class="co"># Pull every strokes-gained category in a single batched call</span></span>
+<span><span class="va">sg</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_stats.html">pga_stats</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"02675"</span>, <span class="st">"02567"</span>, <span class="st">"02568"</span>, <span class="st">"02569"</span>, <span class="st">"02564"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">sg</span><span class="op">$</span><span class="va">stat_title</span><span class="op">)</span></span>
+<span><span class="co">#&gt; SG: Approach   SG: Around-the-Green   SG: Off-the-Tee   SG: Putting   SG: Total</span></span>
+<span><span class="co">#&gt;          166                    166                166           166         166</span></span>
 <span></span>
-<span><span class="co"># Check what stat you just pulled</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">sg_total</span>, <span class="st">"stat_title"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; "SG: Total"</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">sg_total</span>, <span class="st">"tour_avg"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; "0.000"</span></span></code></pre></div>
+<span><span class="co"># Multi-year version — adds `year` as a column on every row</span></span>
+<span><span class="va">sg_multi</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_stats.html">pga_stats</a></span><span class="op">(</span><span class="st">"02675"</span>, year <span class="op">=</span> <span class="fl">2022</span><span class="op">:</span><span class="fl">2024</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="finding-stats">Finding Stats<a class="anchor" aria-label="anchor" href="#finding-stats"></a>
@@ -380,10 +390,8 @@
 <h3 id="historical-data">Historical Data<a class="anchor" aria-label="anchor" href="#historical-data"></a>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Driving distance over the years</span></span>
-<span><span class="va">dd_2024</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_stats.html">pga_stats</a></span><span class="op">(</span><span class="st">"101"</span>, year <span class="op">=</span> <span class="fl">2024</span><span class="op">)</span></span>
-<span><span class="va">dd_2020</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_stats.html">pga_stats</a></span><span class="op">(</span><span class="st">"101"</span>, year <span class="op">=</span> <span class="fl">2020</span><span class="op">)</span></span>
-<span><span class="va">dd_2015</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_stats.html">pga_stats</a></span><span class="op">(</span><span class="st">"101"</span>, year <span class="op">=</span> <span class="fl">2015</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Driving distance across an arbitrary year range — one call, one tibble</span></span>
+<span><span class="va">dd</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_stats.html">pga_stats</a></span><span class="op">(</span><span class="st">"101"</span>, year <span class="op">=</span> <span class="fl">2015</span><span class="op">:</span><span class="fl">2024</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># FedExCup standings from past seasons</span></span>
 <span><span class="fu"><a href="reference/pga_fedex_cup.html">pga_fedex_cup</a></span><span class="op">(</span><span class="fl">2025</span><span class="op">)</span></span>
@@ -475,9 +483,11 @@
 <strong>REST endpoint:</strong> <code>https://data-api.pgatour.com</code>
 </li>
 <li>
-<strong>Authentication:</strong> Uses a public API key embedded in the PGA Tour frontend (no user authentication required)</li>
+<strong>Authentication:</strong> Uses a public API key embedded in the PGA Tour frontend (no user authentication required). If the frontend key rotates, set <code>Sys.setenv(PGA_API_KEY = "...")</code> to override the bundled default without reinstalling.</li>
 <li>
-<strong>Rate limiting:</strong> Built-in throttling at 10 requests/second</li>
+<strong>Rate limiting:</strong> Built-in throttling at 10 requests/second.</li>
+<li>
+<strong>Resilience:</strong> 30-second timeout, 3-try retry on transient failures (408 / 429 / 5xx), and clear error messages when the API returns malformed responses.</li>
 </ul>
 <p>Several endpoints return gzip+base64 compressed payloads. The package handles decompression transparently.</p>
 </div>
@@ -491,6 +501,8 @@
 <a href="https://jeroen.r-universe.dev/jsonlite" class="external-link">jsonlite</a> — JSON parsing and base64 decoding</li>
 <li>
 <a href="https://tibble.tidyverse.org/" class="external-link">tibble</a> — Tidy data frames</li>
+<li>
+<a href="https://vctrs.r-lib.org/" class="external-link">vctrs</a> — Robust row/column binding</li>
 <li>
 <a href="https://cli.r-lib.org/" class="external-link">cli</a> — User-friendly error messages</li>
 </ul>

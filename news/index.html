@@ -36,6 +36,61 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="development version" id="pgatour-development-version">pgatouR (development version)<a class="anchor" aria-label="anchor" href="#pgatour-development-version"></a></h2>
+<div class="section level3">
+<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<ul><li>
+<code><a href="../reference/pga_player_tournament_status.html">pga_player_tournament_status()</a></code> now returns a zero-row tibble when the API has no status to report (player not currently in a tournament). It previously returned a one-row tibble with all <code>NA</code> columns. The column schema is unchanged.</li>
+<li>
+<code><a href="../reference/pga_stats.html">pga_stats()</a></code> no longer attaches metadata (<code>stat_title</code>, <code>tour_avg</code>, <code>year</code>, <code>display_season</code>) as attributes. <code>stat_title</code>, <code>stat_id</code>, and <code>year</code> are now real columns on the returned tibble; the other metadata was dropped (it was silently lost the moment any dplyr verb ran on the result anyway).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<ul><li>
+<code><a href="../reference/pga_stats.html">pga_stats()</a></code> accepts vectors for <code>stat_id</code> and <code>year</code>, looping internally and stacking results with <code>stat_id</code> and <code>year</code> columns.</li>
+<li>
+<code><a href="../reference/pga_stats.html">pga_stats()</a></code> and <code><a href="../reference/pga_fedex_cup.html">pga_fedex_cup()</a></code> gain an <code>event_query</code> argument that passes through to the upstream <code>StatDetailEventQuery</code> variable.</li>
+<li>Three new endpoints fill out documented API coverage: <code><a href="../reference/pga_content.html">pga_content()</a></code> (CMS content), <code><a href="../reference/pga_odds_interactivity.html">pga_odds_interactivity()</a></code> (odds widget config), and <code><a href="../reference/pga_speed_rounds.html">pga_speed_rounds()</a></code> (speed-rounds video index).</li>
+<li>
+<code>PGA_API_KEY</code> env var overrides the bundled frontend key so users can swap keys without reinstalling if the public key rotates.</li>
+<li>
+<code>PGATOUR_VERBOSE</code> env var enables request-level logging via <code>cli</code> for troubleshooting.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<ul><li>
+<code><a href="../reference/pga_player_tournament_status.html">pga_player_tournament_status()</a></code>: fixed phantom <code>roundDisplay</code> mapping that was always <code>NA</code>. The fields actually returned by the API (<code>roundStatusDisplay</code>, <code>roundStatusColor</code>) are now surfaced as columns.</li>
+<li>
+<code><a href="../reference/pga_player_results.html">pga_player_results()</a></code>: was hardcoding the first season in the response, silently dropping all other seasons. Now returns every season with a <code>season</code> column.</li>
+<li>
+<code><a href="../reference/pga_player_stats.html">pga_player_stats()</a></code>: <code>rank</code> is now an integer column rather than character.</li>
+<li>
+<code><a href="../reference/pga_shot_details.html">pga_shot_details()</a></code>: no longer crashes with “missing value where TRUE/FALSE needed” when the API returns an empty <code>holes</code> list (e.g. player with no tracked shots that round).</li>
+<li>
+<code>pga_decompress()</code>: malformed payloads (empty string, non-base64, invalid gzip, invalid JSON) now produce clear errors naming the failed step instead of cryptic C-level messages like <code>inflateEnd -3</code>.</li>
+<li>Header-derived column names that previously collided (e.g. two <code>"Rank"</code> labels in player results, free-form spaces in stat headers) are now deduplicated via <code>make_unique_snake()</code>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="robustness--performance-development-version">Robustness / performance<a class="anchor" aria-label="anchor" href="#robustness--performance-development-version"></a></h3>
+<ul><li>Transport now applies a 30-second <code>req_timeout()</code> and a three-try <code>req_retry()</code> on 408/429/5xx, so transient CDN failures recover automatically instead of failing the call.</li>
+<li>Non-JSON 200 responses are caught and surfaced with the operation name and status code, instead of crashing in <code>resp_body_json()</code>.</li>
+<li>
+<code><a href="../reference/pga_tee_times.html">pga_tee_times()</a></code> now builds one tibble per group rather than per player, drastically reducing allocations on large fields.</li>
+<li>
+<code><a href="../reference/pga_leaderboard.html">pga_leaderboard()</a></code> now <code>%||%</code>-guards every player/scoring field so a partial response from the API can’t break tibble construction. <code>total_sort</code> and <code>score_sort</code> are returned as numeric (they were character).</li>
+<li>
+<code><a href="../reference/pga_tournaments.html">pga_tournaments()</a></code> uses <code><a href="https://vctrs.r-lib.org/reference/vec_bind.html" class="external-link">vctrs::vec_rbind()</a></code> for the <code>courses</code> list-column so heterogeneous course schemas no longer silently fall back to an empty tibble.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="testing--infra-development-version">Testing / infra<a class="anchor" aria-label="anchor" href="#testing--infra-development-version"></a></h3>
+<ul><li>Added an offline test suite (89 tests across 10 files) that mocks <code>pga_graphql_request</code> / <code>pga_rest_request</code> against fixtures captured in <code>tests/testthat/fixtures/</code>. Re-capture with <code>Rscript data-raw/fixtures.R</code>.</li>
+<li>Added an <code>R-CMD-check</code> GitHub Actions workflow that runs on macOS and Ubuntu against R release, devel, and oldrel-1.</li>
+<li>
+<code>R/utils-parse.R</code> defines <code>%||%</code> locally so the package works on R versions older than 4.4 (which is when <code>%||%</code> landed in base).</li>
+<li>The long-form guide moved from a CRAN-style vignette to a pkgdown article in <code>vignettes/articles/</code>. R CMD check no longer tangles and runs its live API calls.</li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="pgatour-010">pgatouR 0.1.0<a class="anchor" aria-label="anchor" href="#pgatour-010"></a></h2>
 <p>Initial release.</p>
 <div class="section level3">

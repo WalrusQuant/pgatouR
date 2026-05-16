@@ -45,7 +45,7 @@ See <a href="stat_ids.html">stat_ids</a> for a full list of available stat IDs.<
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pga_stats</span><span class="op">(</span><span class="va">stat_id</span>, year <span class="op">=</span> <span class="cn">NULL</span>, tour <span class="op">=</span> <span class="st">"R"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">pga_stats</span><span class="op">(</span><span class="va">stat_id</span>, year <span class="op">=</span> <span class="cn">NULL</span>, tour <span class="op">=</span> <span class="st">"R"</span>, event_query <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -53,31 +53,55 @@ See <a href="stat_ids.html">stat_ids</a> for a full list of available stat IDs.<
 
 
 <dl><dt id="arg-stat-id">stat_id<a class="anchor" aria-label="anchor" href="#arg-stat-id"></a></dt>
-<dd><p>Character. Stat ID (e.g., <code>"02675"</code> for SG: Total).</p></dd>
+<dd><p>Character vector. One or more stat IDs (e.g., <code>"02675"</code> for
+SG: Total). When length &gt; 1, results are stacked with a <code>stat_id</code> column.</p></dd>
 
 
 <dt id="arg-year">year<a class="anchor" aria-label="anchor" href="#arg-year"></a></dt>
-<dd><p>Integer or NULL. Season year. Defaults to current season.</p></dd>
+<dd><p>Integer vector or <code>NULL</code>. One or more season years. <code>NULL</code>
+(default) uses the current season. When length &gt; 1, results are stacked
+with a <code>year</code> column.</p></dd>
 
 
 <dt id="arg-tour">tour<a class="anchor" aria-label="anchor" href="#arg-tour"></a></dt>
-<dd><p>Character. Tour code. Defaults to <code>"R"</code>.</p></dd>
+<dd><p>Character. Tour code (<code>"R"</code>, <code>"S"</code>, or <code>"H"</code>). Defaults to <code>"R"</code>.</p></dd>
+
+
+<dt id="arg-event-query">event_query<a class="anchor" aria-label="anchor" href="#arg-event-query"></a></dt>
+<dd><p>Optional named list passed through as the GraphQL
+<code>StatDetailEventQuery</code> variable (e.g., for "Last 5 events" or FedEx Fall
+filters). Most callers can leave this <code>NULL</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A tibble with one row per player, including rank, player info,
-and stat values.</p>
+    <p>A tibble with one row per player per (stat_id, year) request.
+Includes rank, player info, and stat value columns. Multi-stat results
+are stacked vertically; columns absent for a given stat are filled with
+<code>NA</code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The upstream <code>StatDetails</code> operation accepts a single <code>statId</code> and a single
+<code>year</code> per request. When <code>stat_id</code> or <code>year</code> are passed as vectors, this
+function loops internally and row-binds the results, adding <code>stat_id</code> and
+<code>year</code> columns so chunks can be told apart.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="co"># Strokes Gained: Total</span></span></span>
+<span class="r-in"><span><span class="co"># Strokes Gained: Total, current season</span></span></span>
 <span class="r-in"><span><span class="fu">pga_stats</span><span class="op">(</span><span class="st">"02675"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Driving Distance, 2024 season</span></span></span>
 <span class="r-in"><span><span class="fu">pga_stats</span><span class="op">(</span><span class="st">"101"</span>, year <span class="op">=</span> <span class="fl">2024</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Multiple stats in one call</span></span></span>
+<span class="r-in"><span><span class="fu">pga_stats</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"02675"</span>, <span class="st">"101"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Multi-year SG: Total</span></span></span>
+<span class="r-in"><span><span class="fu">pga_stats</span><span class="op">(</span><span class="st">"02675"</span>, year <span class="op">=</span> <span class="fl">2022</span><span class="op">:</span><span class="fl">2024</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

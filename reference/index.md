@@ -60,6 +60,12 @@
   : Get player video highlights
 - [`pga_tourcast_videos()`](https://walrusquant.github.io/pgatouR/reference/pga_tourcast_videos.md)
   : Get shot-by-shot video clips for a player round
+- [`pga_speed_rounds()`](https://walrusquant.github.io/pgatouR/reference/pga_speed_rounds.md)
+  : Get speed-rounds video index
+- [`pga_content()`](https://walrusquant.github.io/pgatouR/reference/pga_content.md)
+  : Get CMS content fragment
+- [`pga_odds_interactivity()`](https://walrusquant.github.io/pgatouR/reference/pga_odds_interactivity.md)
+  : Get odds interactivity configuration
 
 ## Data
 

@@ -17,8 +17,10 @@ pga_player_profile(player_id)
 
 ## Value
 
-A named list with `summary` (tibble of career highlights) and `bio`
-(list of biographical info).
+A named list with scalar bio fields (`player_id`, `first_name`,
+`last_name`, `country`, `country_code`, `born`, `age`, `birthplace`,
+`college`, `turned_pro`) plus two tibbles: `highlights` (career
+highlight cards) and `overview` (overview-stats grid).
 
 ## Examples
 
