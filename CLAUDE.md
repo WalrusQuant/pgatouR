@@ -76,10 +76,10 @@ Roughly one file per endpoint family (`R/leaderboard.R`, `R/scorecard.R`, `R/sho
 
 ### Reference
 
-`pgatour_api_docs.md` at the repo root is the primary reference for the upstream API's shape and available operations — consult it before inventing field names or adding new endpoints.
+`data-raw/pgatour_api_docs.md` is the primary reference for the upstream API's shape and available operations — consult it before inventing field names or adding new endpoints.
 
 ## CI / docs
 
-`.github/workflows/pkgdown.yaml` installs the package and builds the pkgdown site on pushes. `_pkgdown.yml` configures the site (deployed at `https://walrusquant.github.io/pgatouR/`). `pgatour_api_docs.md`, `data-raw/`, `vignettes/`, `.github/`, `.claude/`, and `CLAUDE.md` are excluded from the built package via `.Rbuildignore`.
+`.github/workflows/pkgdown.yaml` installs the package and builds the pkgdown site on pushes. `_pkgdown.yml` configures the site (deployed at `https://walrusquant.github.io/pgatouR/`). `data-raw/`, `vignettes/`, `.github/`, `.claude/`, and `CLAUDE.md` are excluded from the built package via `.Rbuildignore`. The upstream API reference (`data-raw/pgatour_api_docs.md`) lives under `data-raw/` so it's both excluded from the build and outside pkgdown's auto-render scope.
 
 The long-form guide lives at `vignettes/articles/getting-started.Rmd` — pkgdown picks it up as an "article" on the docs site. It is not a CRAN-style vignette, so it isn't tangled or executed by R CMD check (the previous setup ran live API calls during check, which made the check fragile).

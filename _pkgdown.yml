@@ -51,6 +51,9 @@ reference:
       - pga_news_franchises
       - pga_videos
       - pga_tourcast_videos
+      - pga_speed_rounds
+      - pga_content
+      - pga_odds_interactivity
 
   - title: Data
     contents:
