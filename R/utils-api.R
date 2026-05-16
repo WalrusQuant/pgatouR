@@ -1,10 +1,38 @@
 # API constants
 .pga_graphql_url <- "https://orchestrator.pgatour.com/graphql"
 .pga_rest_url <- "https://data-api.pgatour.com"
-.pga_api_key <- "da2-gsrx5bibzbb4njvhl7t37wqyl4"
+.pga_api_key_default <- "da2-gsrx5bibzbb4njvhl7t37wqyl4"
 
 # Cache environment for query strings
 .pga_cache <- new.env(parent = emptyenv())
+
+# Resolve the API key, preferring the PGA_API_KEY env var so users can swap
+# keys without reinstalling if the bundled frontend key rotates.
+pga_api_key <- function() {
+  key <- Sys.getenv("PGA_API_KEY", unset = "")
+  if (nzchar(key)) key else .pga_api_key_default
+}
+
+# Treat the listed HTTP statuses as transient and worth retrying.
+.pga_is_transient <- function(resp) {
+  httr2::resp_status(resp) %in% c(408, 429, 500, 502, 503, 504)
+}
+
+# Parse a response body as JSON, but surface a clean error that names the
+# operation when the body is not actually JSON (e.g. a CDN-served HTML 5xx).
+pga_parse_json <- function(resp, context) {
+  tryCatch(
+    resp_body_json(resp),
+    error = function(e) {
+      cli_abort(c(
+        "PGA Tour API returned a non-JSON response.",
+        "i" = "Context: {.val {context}}",
+        "i" = "Status: {resp_status(resp)}",
+        "x" = conditionMessage(e)
+      ))
+    }
+  )
+}
 
 #' Read a GraphQL query from inst/graphql/
 #' @param operation_name Character. The operation name (file stem).
@@ -43,7 +71,7 @@ pga_graphql_request <- function(operation_name, variables = list()) {
     req_headers(
       `Content-Type` = "application/json",
       Accept = "application/graphql-response+json, application/json",
-      `x-api-key` = .pga_api_key,
+      `x-api-key` = pga_api_key(),
       `x-pgat-platform` = "web",
       Origin = "https://www.pgatour.com",
       Referer = "https://www.pgatour.com/"
@@ -54,6 +82,8 @@ pga_graphql_request <- function(operation_name, variables = list()) {
       operationName = operation_name
     )) |>
     req_throttle(rate = 10) |>
+    req_timeout(30) |>
+    req_retry(max_tries = 3, is_transient = .pga_is_transient) |>
     req_error(is_error = function(resp) FALSE) |>
     req_perform()
 
@@ -65,7 +95,7 @@ pga_graphql_request <- function(operation_name, variables = list()) {
     ))
   }
 
-  body <- resp_body_json(resp)
+  body <- pga_parse_json(resp, operation_name)
 
   if (!is.null(body$errors)) {
     msg <- paste(vapply(body$errors, function(e) e$message, character(1)),
@@ -88,13 +118,18 @@ pga_rest_request <- function(path) {
     req_url_path_append(path) |>
     req_user_agent("pgatouR R package (https://github.com/WalrusQuant/pgatouR)") |>
     req_throttle(rate = 10) |>
+    req_timeout(30) |>
+    req_retry(max_tries = 3, is_transient = .pga_is_transient) |>
     req_error(is_error = function(resp) FALSE) |>
     req_perform()
 
   status <- resp_status(resp)
   if (status >= 400) {
-    cli_abort("PGA Tour REST API request failed with HTTP {status}.")
+    cli_abort(c(
+      "PGA Tour REST API request failed with HTTP {status}.",
+      "i" = "Path: {.val {path}}"
+    ))
   }
 
-  resp_body_json(resp)
+  pga_parse_json(resp, path)
 }
