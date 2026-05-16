@@ -20,6 +20,9 @@ pga_leaderboard("R2026475")
 # Strokes Gained: Total rankings
 pga_stats("02675")
 
+# Multiple stats or multiple years in a single call
+pga_stats(c("02675", "101"), year = 2023:2024)
+
 # Full player directory (2,400+ players)
 pga_players()
 
@@ -51,8 +54,8 @@ pga_schedule(2025)
 
 | Function | Description |
 |---|---|
-| `pga_stats(stat_id, year, tour)` | Any of 300+ stats with full player rankings (data from 2004-2026) |
-| `pga_fedex_cup(year, tour)` | FedExCup standings with projected and official rankings |
+| `pga_stats(stat_id, year, tour, event_query)` | Any of 300+ stats with full player rankings (data from 2004–2026). Accepts vectors of `stat_id` / `year` for batched requests. |
+| `pga_fedex_cup(year, tour, event_query)` | FedExCup standings with projected and official rankings |
 | `pga_scorecard_comparison(tournament_id, player_ids, category)` | Head-to-head stat comparison between players |
 
 ### Players & Tournaments
@@ -82,6 +85,9 @@ pga_schedule(2025)
 | `pga_news_franchises(tour)` | Available news categories for filtering |
 | `pga_videos(player_ids, tournament_id)` | Player video highlights with filtering options |
 | `pga_tourcast_videos(tournament_id, player_id, round)` | Shot-by-shot video clips for a player's round |
+| `pga_speed_rounds(tour)` | Speed-rounds video index |
+| `pga_content(path)` | CMS content fragments (overview pages, hub copy) — returns a nested list |
+| `pga_odds_interactivity()` | Odds widget / book-partner configuration — returns a nested list |
 
 ### Bundled Data
 
@@ -140,19 +146,14 @@ pga_player_tournament_status("39971")  # Sungjae Im — position, score, thru
 ```r
 library(pgatouR)
 
-# Get all six strokes gained categories
-sg_total <- pga_stats("02675")        # SG: Total
-sg_ott   <- pga_stats("02567")        # SG: Off-the-Tee
-sg_app   <- pga_stats("02568")        # SG: Approach
-sg_arg   <- pga_stats("02569")        # SG: Around-the-Green
-sg_putt  <- pga_stats("02564")        # SG: Putting
+# Pull every strokes-gained category in a single batched call
+sg <- pga_stats(c("02675", "02567", "02568", "02569", "02564"))
+table(sg$stat_title)
+#> SG: Approach   SG: Around-the-Green   SG: Off-the-Tee   SG: Putting   SG: Total
+#>          166                    166                166           166         166
 
-# Check what stat you just pulled
-attr(sg_total, "stat_title")
-#> "SG: Total"
-
-attr(sg_total, "tour_avg")
-#> "0.000"
+# Multi-year version — adds `year` as a column on every row
+sg_multi <- pga_stats("02675", year = 2022:2024)
 ```
 
 ### Finding Stats
@@ -171,10 +172,8 @@ stat_ids[stat_ids$category == "Strokes Gained", ]
 ### Historical Data
 
 ```r
-# Driving distance over the years
-dd_2024 <- pga_stats("101", year = 2024)
-dd_2020 <- pga_stats("101", year = 2020)
-dd_2015 <- pga_stats("101", year = 2015)
+# Driving distance across an arbitrary year range — one call, one tibble
+dd <- pga_stats("101", year = 2015:2024)
 
 # FedExCup standings from past seasons
 pga_fedex_cup(2025)
@@ -249,8 +248,9 @@ This package wraps the PGA Tour's GraphQL and REST APIs:
 
 - **GraphQL endpoint:** `https://orchestrator.pgatour.com/graphql`
 - **REST endpoint:** `https://data-api.pgatour.com`
-- **Authentication:** Uses a public API key embedded in the PGA Tour frontend (no user authentication required)
-- **Rate limiting:** Built-in throttling at 10 requests/second
+- **Authentication:** Uses a public API key embedded in the PGA Tour frontend (no user authentication required). If the frontend key rotates, set `Sys.setenv(PGA_API_KEY = "...")` to override the bundled default without reinstalling.
+- **Rate limiting:** Built-in throttling at 10 requests/second.
+- **Resilience:** 30-second timeout, 3-try retry on transient failures (408 / 429 / 5xx), and clear error messages when the API returns malformed responses.
 
 Several endpoints return gzip+base64 compressed payloads. The package handles decompression transparently.
 
@@ -259,6 +259,7 @@ Several endpoints return gzip+base64 compressed payloads. The package handles de
 - [httr2](https://httr2.r-lib.org/) — HTTP requests
 - [jsonlite](https://jeroen.r-universe.dev/jsonlite) — JSON parsing and base64 decoding
 - [tibble](https://tibble.tidyverse.org/) — Tidy data frames
+- [vctrs](https://vctrs.r-lib.org/) — Robust row/column binding
 - [cli](https://cli.r-lib.org/) — User-friendly error messages
 
 ## License

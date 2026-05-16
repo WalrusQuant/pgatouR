@@ -6,6 +6,7 @@
 ^pgatour_api_docs\.md$
 ^\.github$
 ^\.claude$
+^CLAUDE\.md$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
