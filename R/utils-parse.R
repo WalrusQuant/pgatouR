@@ -1,3 +1,12 @@
+#' Default-value operator (back-port for R < 4.4)
+#'
+#' Base R 4.4 added `%||%`, but the package declares `Depends: R (>= 4.1.0)`.
+#' Define it locally so the package works on older R without depending on
+#' rlang's re-export being on the search path.
+#' @noRd
+#' @keywords internal
+`%||%` <- function(x, y) if (is.null(x)) y else x
+
 #' Convert camelCase to snake_case
 #' @param x Character vector.
 #' @return Character vector in snake_case.

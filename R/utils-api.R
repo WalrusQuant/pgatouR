@@ -13,6 +13,13 @@ pga_api_key <- function() {
   if (nzchar(key)) key else .pga_api_key_default
 }
 
+# Truthy when PGATOUR_VERBOSE is set to a non-empty, non-"0"/"false" value.
+# Toggle with Sys.setenv(PGATOUR_VERBOSE = 1) for troubleshooting.
+pga_is_verbose <- function() {
+  v <- tolower(Sys.getenv("PGATOUR_VERBOSE", unset = ""))
+  nzchar(v) && !v %in% c("0", "false", "no", "off")
+}
+
 # Treat the listed HTTP statuses as transient and worth retrying.
 .pga_is_transient <- function(resp) {
   httr2::resp_status(resp) %in% c(408, 429, 500, 502, 503, 504)
@@ -66,6 +73,13 @@ pga_read_query <- function(operation_name) {
 pga_graphql_request <- function(operation_name, variables = list()) {
   query <- pga_read_query(operation_name)
 
+  if (pga_is_verbose()) {
+    cli_inform(c(
+      "i" = "GraphQL {.val {operation_name}}",
+      " " = "variables: {.val {jsonlite::toJSON(variables, auto_unbox = TRUE)}}"
+    ))
+  }
+
   resp <- request(.pga_graphql_url) |>
     req_user_agent("pgatouR R package (https://github.com/WalrusQuant/pgatouR)") |>
     req_headers(
@@ -114,6 +128,10 @@ pga_graphql_request <- function(operation_name, variables = list()) {
 #' @return Parsed JSON as a list.
 #' @noRd
 pga_rest_request <- function(path) {
+  if (pga_is_verbose()) {
+    cli_inform(c("i" = "REST GET {.val {path}}"))
+  }
+
   resp <- request(.pga_rest_url) |>
     req_url_path_append(path) |>
     req_user_agent("pgatouR R package (https://github.com/WalrusQuant/pgatouR)") |>
