@@ -41,20 +41,23 @@ pga_leaderboard <- function(tournament_id) {
     rounds_df <- data.frame(stringsAsFactors = FALSE)
   }
 
+  n <- nrow(player_info)
+  na_chr <- rep(NA_character_, n)
+
   result <- tibble(
-    player_id = player_info$id,
-    first_name = player_info$firstName,
-    last_name = player_info$lastName,
-    display_name = player_info$displayName,
-    country = player_info$country,
-    position = scoring$position,
-    total = scoring$total,
-    total_sort = scoring$totalSort,
-    thru = scoring$thru,
-    score = scoring$score,
-    score_sort = scoring$scoreSort,
-    current_round = scoring$currentRound,
-    player_state = scoring$playerState
+    player_id     = player_info$id          %||% na_chr,
+    first_name    = player_info$firstName   %||% na_chr,
+    last_name     = player_info$lastName    %||% na_chr,
+    display_name  = player_info$displayName %||% na_chr,
+    country       = player_info$country     %||% na_chr,
+    position      = scoring$position        %||% na_chr,
+    total         = scoring$total           %||% na_chr,
+    total_sort    = suppressWarnings(as.numeric(scoring$totalSort %||% na_chr)),
+    thru          = scoring$thru            %||% na_chr,
+    score         = scoring$score           %||% na_chr,
+    score_sort    = suppressWarnings(as.numeric(scoring$scoreSort %||% na_chr)),
+    current_round = scoring$currentRound    %||% na_chr,
+    player_state  = scoring$playerState     %||% na_chr
   )
 
   if (ncol(rounds_df) > 0) {

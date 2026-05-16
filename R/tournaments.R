@@ -56,9 +56,11 @@ pga_tournaments <- function(ids) {
     # Courses as list column
     courses = lapply(tournaments, function(t) {
       c_data <- t$courses
-      if (is.null(c_data)) return(tibble())
-      tryCatch(as_tibble(do.call(rbind, lapply(c_data, as.data.frame, stringsAsFactors = FALSE))),
-               error = function(e) tibble())
+      if (is.null(c_data) || length(c_data) == 0) return(tibble())
+      tryCatch(
+        as_tibble(do.call(vec_rbind, lapply(c_data, as.data.frame, stringsAsFactors = FALSE))),
+        error = function(e) tibble()
+      )
     })
   )
 }
