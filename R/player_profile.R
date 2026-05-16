@@ -331,6 +331,16 @@ pga_player_tournament_status <- function(player_id) {
     return(tibble())
   }
 
+  # The API sometimes returns a status object whose fields are all null
+  # (player not in a current tournament). Treat that as "empty" too, so the
+  # function's contract is binary: either a real row, or zero rows.
+  scalar_fields <- c("playerId", "tournamentId", "tournamentName",
+                     "position", "score", "total", "displayMode")
+  if (all(vapply(scalar_fields, function(k) is.null(status[[k]]),
+                 logical(1)))) {
+    return(tibble())
+  }
+
   tibble(
     player_id = status$playerId %||% NA_character_,
     tournament_id = status$tournamentId %||% NA_character_,
