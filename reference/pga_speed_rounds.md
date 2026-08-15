@@ -14,7 +14,8 @@ pga_speed_rounds(tour = "R")
 
 - tour:
 
-  Character. Tour code (`"R"`, `"S"`, or `"H"`). Defaults to `"R"`.
+  Character. Tour code (`"R"`, `"S"`, `"H"`, or `"Y"`). Defaults to
+  `"R"`.
 
 ## Value
 

@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>R Client for the PGA Tour API • pgatouR</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="R Client for the PGA Tour API">
 <meta name="description" content="Access PGA Tour leaderboards, player stats, scorecards, shot tracking data, tee times, FedExCup standings, odds, and more. Wraps the PGA Tour GraphQL and REST APIs, returning tidy tibbles.">
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">pgatouR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,7 +54,7 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="pgatour-">pgatouR <img src="reference/figures/logo.png" align="right" height="139"><a class="anchor" aria-label="anchor" href="#pgatour-"></a>
 </h1></div>
-<p>An R client for the PGA Tour API. Access leaderboards, player stats, scorecards, shot tracking data, tee times, FedExCup standings, betting odds, broadcast schedules, news, and video highlights — all returned as tidy tibbles.</p>
+<p>An R client for the PGA Tour API. Access leaderboards, fields, course stats, player stats, scorecards, shot tracking, tee times, FedExCup and signature standings, betting markets, broadcast schedules, news, and video highlights — all returned as tidy tibbles.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -68,8 +68,9 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://walrusquant.github.io/pgatouR/">pgatouR</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Current leaderboard</span></span>
-<span><span class="fu"><a href="reference/pga_leaderboard.html">pga_leaderboard</a></span><span class="op">(</span><span class="st">"R2026475"</span><span class="op">)</span></span>
+<span><span class="co"># This week's featured event, then its leaderboard</span></span>
+<span><span class="va">tid</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_current_tournament.html">pga_current_tournament</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">tournament_id</span></span>
+<span><span class="fu"><a href="reference/pga_leaderboard.html">pga_leaderboard</a></span><span class="op">(</span><span class="va">tid</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Strokes Gained: Total rankings</span></span>
 <span><span class="fu"><a href="reference/pga_stats.html">pga_stats</a></span><span class="op">(</span><span class="st">"02675"</span><span class="op">)</span></span>
@@ -77,14 +78,14 @@
 <span><span class="co"># Multiple stats or multiple years in a single call</span></span>
 <span><span class="fu"><a href="reference/pga_stats.html">pga_stats</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"02675"</span>, <span class="st">"101"</span><span class="op">)</span>, year <span class="op">=</span> <span class="fl">2023</span><span class="op">:</span><span class="fl">2024</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Full player directory (2,400+ players)</span></span>
+<span><span class="co"># Full player directory (2,700+ players)</span></span>
 <span><span class="fu"><a href="reference/pga_players.html">pga_players</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Hole-by-hole scorecard</span></span>
-<span><span class="fu"><a href="reference/pga_scorecard.html">pga_scorecard</a></span><span class="op">(</span><span class="st">"R2026475"</span>, <span class="st">"39971"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/pga_scorecard.html">pga_scorecard</a></span><span class="op">(</span><span class="va">tid</span>, <span class="st">"46046"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Shot-level tracking with coordinates</span></span>
-<span><span class="fu"><a href="reference/pga_shot_details.html">pga_shot_details</a></span><span class="op">(</span><span class="st">"R2026475"</span>, <span class="st">"39971"</span>, round <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/pga_shot_details.html">pga_shot_details</a></span><span class="op">(</span><span class="va">tid</span>, <span class="st">"46046"</span>, round <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Full season schedule with dates, purse, champions</span></span>
 <span><span class="fu"><a href="reference/pga_schedule.html">pga_schedule</a></span><span class="op">(</span><span class="fl">2025</span><span class="op">)</span></span></code></pre></div>
@@ -106,12 +107,36 @@
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><code>pga_leaderboard(tournament_id)</code></td>
-<td>Full leaderboard with scores, positions, and round-by-round results</td>
+<td><code>pga_current_tournament(tour)</code></td>
+<td>Featured / this-week tournament ID for a tour</td>
 </tr>
 <tr class="even">
+<td><code>pga_leaderboard(tournament_id)</code></td>
+<td>Full leaderboard with scores, positions, movement, tee times, and round-by-round results</td>
+</tr>
+<tr class="odd">
 <td><code>pga_current_leaders(tournament_id)</code></td>
 <td>Quick top-15 snapshot for in-progress tournaments</td>
+</tr>
+<tr class="even">
+<td><code>pga_leaderboard_holes(tournament_id, round)</code></td>
+<td>Hole-by-hole scores for the entire field</td>
+</tr>
+<tr class="odd">
+<td><code>pga_leaderboard_strokes(tournament_id)</code></td>
+<td>Strokes-gained leaderboard</td>
+</tr>
+<tr class="even">
+<td><code>pga_leaderboard_stats(tournament_id, stats_type)</code></td>
+<td>In-tournament stat table (off-the-tee, approach, putting, …)</td>
+</tr>
+<tr class="odd">
+<td><code>pga_field(tournament_id)</code></td>
+<td>Tournament field with OWGR, withdrawn/alternate flags</td>
+</tr>
+<tr class="even">
+<td><code>pga_field_stats(tournament_id, stat_type)</code></td>
+<td>Course-fit or current-form stats for the field</td>
 </tr>
 <tr class="odd">
 <td><code>pga_tee_times(tournament_id)</code></td>
@@ -122,16 +147,40 @@
 <td>Hole-by-hole scorecard with par, score, yardage, and status</td>
 </tr>
 <tr class="odd">
+<td><code>pga_scorecard_stats(tournament_id, player_id)</code></td>
+<td>Scorecard-adjacent strokes-gained / scoring splits</td>
+</tr>
+<tr class="even">
 <td><code>pga_shot_details(tournament_id, player_id, round)</code></td>
 <td>Shot-by-shot tracking data with coordinates, distances, and play-by-play</td>
 </tr>
+<tr class="odd">
+<td><code>pga_shot_scatter(tournament_id, course, hole)</code></td>
+<td>Hole-level shot cloud</td>
+</tr>
 <tr class="even">
+<td><code>pga_group_locations(tournament_id, round)</code></td>
+<td>Live group locations on the course</td>
+</tr>
+<tr class="odd">
 <td><code>pga_odds(tournament_id)</code></td>
 <td>Betting odds to win for the tournament field</td>
 </tr>
+<tr class="even">
+<td><code>pga_odds_markets(tournament_id)</code></td>
+<td>Available betting markets (matchups, finishes, props, 3-ball)</td>
+</tr>
 <tr class="odd">
+<td><code>pga_odds_player(tournament_id, player_id)</code></td>
+<td>Per-player betting lines</td>
+</tr>
+<tr class="even">
 <td><code>pga_coverage(tournament_id)</code></td>
 <td>Broadcast and streaming schedule with networks and time windows</td>
+</tr>
+<tr class="odd">
+<td><code>pga_weather(tournament_id)</code></td>
+<td>Hourly and daily forecast for the tournament site</td>
 </tr>
 </tbody>
 </table>
@@ -151,13 +200,49 @@
 <tbody>
 <tr class="odd">
 <td><code>pga_stats(stat_id, year, tour, event_query)</code></td>
-<td>Any of 300+ stats with full player rankings (data from 2004–2026). Accepts vectors of <code>stat_id</code> / <code>year</code> for batched requests.</td>
+<td>Any of 470+ stats with full player rankings (data from 2004–2026). Accepts vectors of <code>stat_id</code> / <code>year</code> for batched requests.</td>
+</tr>
+<tr class="even">
+<td><code>pga_stat_catalog(tour, year)</code></td>
+<td>Live stat catalog (id, name, category) from the stats hub</td>
+</tr>
+<tr class="odd">
+<td><code>pga_stat_leaders(tour, year)</code></td>
+<td>Featured stat leaders from the stats hub</td>
 </tr>
 <tr class="even">
 <td><code>pga_fedex_cup(year, tour, event_query)</code></td>
 <td>FedExCup standings with projected and official rankings</td>
 </tr>
 <tr class="odd">
+<td><code>pga_cup_standings(year, tour)</code></td>
+<td>Default tour-cup table (FedExCup / Schwab / Fortinet / Americas)</td>
+</tr>
+<tr class="even">
+<td><code>pga_signature_standings(tour)</code></td>
+<td>Signature-event standings</td>
+</tr>
+<tr class="odd">
+<td><code>pga_priority_rankings(tour, year)</code></td>
+<td>Priority / exemption ranking categories</td>
+</tr>
+<tr class="even">
+<td><code>pga_bubble(tournament_id, tour)</code></td>
+<td>Playoff / tour-card bubble around the cutoff</td>
+</tr>
+<tr class="odd">
+<td><code>pga_all_time_record_categories(tour)</code></td>
+<td>Catalog of all-time record IDs</td>
+</tr>
+<tr class="even">
+<td><code>pga_all_time_records(record_id, tour)</code></td>
+<td>One all-time record table</td>
+</tr>
+<tr class="odd">
+<td><code>pga_university_rankings(year, week)</code></td>
+<td>PGA TOUR University rankings</td>
+</tr>
+<tr class="even">
 <td><code>pga_scorecard_comparison(tournament_id, player_ids, category)</code></td>
 <td>Head-to-head stat comparison between players</td>
 </tr>
@@ -186,8 +271,28 @@
 <td>Tournament metadata including location, courses, weather, and format</td>
 </tr>
 <tr class="odd">
+<td><code>pga_tournament_overview(id)</code></td>
+<td>Hub-page overview, champions, and course blurbs</td>
+</tr>
+<tr class="even">
+<td><code>pga_tournament_past_results(id, year)</code></td>
+<td>Historical field results for an event</td>
+</tr>
+<tr class="odd">
 <td><code>pga_schedule(year, tour)</code></td>
 <td>Full season schedule with dates, purse, course, champion, and FedExCup points</td>
+</tr>
+<tr class="even">
+<td><code>pga_course_stats(tournament_id)</code></td>
+<td>Hole-level scoring averages and birdie/bogey counts</td>
+</tr>
+<tr class="odd">
+<td><code>pga_course_stats_overview(tour, year)</code></td>
+<td>Season course-stats hub (hardest/easiest holes, …)</td>
+</tr>
+<tr class="even">
+<td><code>pga_hole_details(tournament_id, course_id, hole)</code></td>
+<td>Scoring breakdown and groups on a single hole</td>
 </tr>
 </tbody>
 </table>
@@ -222,10 +327,14 @@
 <td>Full stat profile (131 stats with ranks) in a single call</td>
 </tr>
 <tr class="odd">
+<td><code>pga_player_finish_stats(player_id, stat_id)</code></td>
+<td>One stat across a player’s recent events</td>
+</tr>
+<tr class="even">
 <td><code>pga_player_bio(player_id)</code></td>
 <td>Biographical text, amateur highlights</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>pga_player_tournament_status(player_id)</code></td>
 <td>Live tournament status (position, score, thru) if currently playing</td>
 </tr>
@@ -290,7 +399,7 @@
 </tr></thead>
 <tbody><tr class="odd">
 <td><code>stat_ids</code></td>
-<td>Lookup table of 340 stat IDs with names, categories, and subcategories</td>
+<td>Lookup table of 470+ stat IDs with names, categories, and subcategories</td>
 </tr></tbody>
 </table>
 </div>
@@ -316,14 +425,18 @@
 <td><code>"H"</code></td>
 <td>Korn Ferry Tour</td>
 </tr>
+<tr class="even">
+<td><code>"Y"</code></td>
+<td>PGA Tour Americas</td>
+</tr>
 </tbody>
 </table>
 </div>
 <div class="section level2">
 <h2 id="tournament-ids">Tournament IDs<a class="anchor" aria-label="anchor" href="#tournament-ids"></a>
 </h2>
-<p>Tournament IDs follow the format <code>{tour_code}{year}{tournament_number}</code>, e.g., <code>"R2026475"</code> for the 2026 Valspar Championship on the PGA Tour.</p>
-<p>You can find tournament IDs from the PGA Tour website URL or by checking the leaderboard/schedule pages. The <code><a href="reference/pga_tournaments.html">pga_tournaments()</a></code> function can retrieve metadata for known IDs.</p>
+<p>Tournament IDs follow the format <code>{tour_code}{year}{tournament_number}</code>, e.g. <code>"R2026027"</code> for the 2026 FedEx St. Jude Championship.</p>
+<p>You can find tournament IDs from <code><a href="reference/pga_current_tournament.html">pga_current_tournament()</a></code> (this week), <code><a href="reference/pga_schedule.html">pga_schedule()</a></code>, PGA Tour URLs, or <code><a href="reference/pga_tournaments.html">pga_tournaments()</a></code> once you have an ID.</p>
 </div>
 <div class="section level2">
 <h2 id="detailed-examples">Detailed Examples<a class="anchor" aria-label="anchor" href="#detailed-examples"></a>
@@ -356,7 +469,10 @@
 <span><span class="va">bio</span><span class="op">$</span><span class="va">text</span>  <span class="co"># paragraphs of biographical text</span></span>
 <span></span>
 <span><span class="co"># Is a player in the current tournament?</span></span>
-<span><span class="fu"><a href="reference/pga_player_tournament_status.html">pga_player_tournament_status</a></span><span class="op">(</span><span class="st">"39971"</span><span class="op">)</span>  <span class="co"># Sungjae Im — position, score, thru</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/pga_player_tournament_status.html">pga_player_tournament_status</a></span><span class="op">(</span><span class="st">"39971"</span><span class="op">)</span>  <span class="co"># Sungjae Im — position, score, thru</span></span>
+<span></span>
+<span><span class="co"># One stat across recent starts</span></span>
+<span><span class="fu"><a href="reference/pga_player_finish_stats.html">pga_player_finish_stats</a></span><span class="op">(</span><span class="st">"52955"</span>, <span class="st">"02675"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="strokes-gained-analysis">Strokes Gained Analysis<a class="anchor" aria-label="anchor" href="#strokes-gained-analysis"></a>
@@ -377,14 +493,18 @@
 <h3 id="finding-stats">Finding Stats<a class="anchor" aria-label="anchor" href="#finding-stats"></a>
 </h3>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Browse the stat_ids dataset</span></span>
+<code class="sourceCode R"><span><span class="co"># Browse the bundled stat_ids dataset</span></span>
 <span><span class="va">stat_ids</span><span class="op">[</span><span class="va">stat_ids</span><span class="op">$</span><span class="va">category</span> <span class="op">==</span> <span class="st">"Putting"</span>, <span class="op">]</span></span>
 <span></span>
 <span><span class="co"># Search by name</span></span>
 <span><span class="va">stat_ids</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"Driving"</span>, <span class="va">stat_ids</span><span class="op">$</span><span class="va">stat_name</span><span class="op">)</span>, <span class="op">]</span></span>
 <span></span>
 <span><span class="co"># All strokes gained stats</span></span>
-<span><span class="va">stat_ids</span><span class="op">[</span><span class="va">stat_ids</span><span class="op">$</span><span class="va">category</span> <span class="op">==</span> <span class="st">"Strokes Gained"</span>, <span class="op">]</span></span></code></pre></div>
+<span><span class="va">stat_ids</span><span class="op">[</span><span class="va">stat_ids</span><span class="op">$</span><span class="va">category</span> <span class="op">==</span> <span class="st">"Strokes Gained"</span>, <span class="op">]</span></span>
+<span></span>
+<span><span class="co"># Or pull the live hub catalog (picks up newly published stats)</span></span>
+<span><span class="fu"><a href="reference/pga_stat_catalog.html">pga_stat_catalog</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/pga_stat_leaders.html">pga_stat_leaders</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="historical-data">Historical Data<a class="anchor" aria-label="anchor" href="#historical-data"></a>
@@ -397,39 +517,56 @@
 <span><span class="fu"><a href="reference/pga_fedex_cup.html">pga_fedex_cup</a></span><span class="op">(</span><span class="fl">2025</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/pga_fedex_cup.html">pga_fedex_cup</a></span><span class="op">(</span><span class="fl">2024</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># Simpler cup table — auto-selects FedEx / Schwab / Fortinet / Americas</span></span>
+<span><span class="fu"><a href="reference/pga_cup_standings.html">pga_cup_standings</a></span><span class="op">(</span><span class="fl">2026</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/pga_cup_standings.html">pga_cup_standings</a></span><span class="op">(</span><span class="fl">2026</span>, tour <span class="op">=</span> <span class="st">"Y"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Historical field for an event (59 seasons available for some tournaments)</span></span>
+<span><span class="fu"><a href="reference/pga_tournament_past_results.html">pga_tournament_past_results</a></span><span class="op">(</span><span class="st">"R2026027"</span>, year <span class="op">=</span> <span class="fl">2025</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># Full season schedule with dates, purse, course, champion</span></span>
 <span><span class="va">schedule_2025</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_schedule.html">pga_schedule</a></span><span class="op">(</span><span class="fl">2025</span><span class="op">)</span></span>
-<span><span class="va">schedule_2026</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_schedule.html">pga_schedule</a></span><span class="op">(</span><span class="fl">2026</span><span class="op">)</span>  <span class="co"># 48 events, future events included</span></span></code></pre></div>
+<span><span class="va">schedule_2026</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_schedule.html">pga_schedule</a></span><span class="op">(</span><span class="fl">2026</span><span class="op">)</span>  <span class="co"># 49 events, future events included</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="live-tournament-tracking">Live Tournament Tracking<a class="anchor" aria-label="anchor" href="#live-tournament-tracking"></a>
 </h3>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Full tournament picture</span></span>
-<span><span class="va">tournament</span>  <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_tournaments.html">pga_tournaments</a></span><span class="op">(</span><span class="st">"R2026475"</span><span class="op">)</span></span>
-<span><span class="va">leaderboard</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_leaderboard.html">pga_leaderboard</a></span><span class="op">(</span><span class="st">"R2026475"</span><span class="op">)</span></span>
-<span><span class="va">tee_times</span>   <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_tee_times.html">pga_tee_times</a></span><span class="op">(</span><span class="st">"R2026475"</span><span class="op">)</span></span>
-<span><span class="va">coverage</span>    <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_coverage.html">pga_coverage</a></span><span class="op">(</span><span class="st">"R2026475"</span><span class="op">)</span></span>
-<span><span class="va">odds</span>        <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_odds.html">pga_odds</a></span><span class="op">(</span><span class="st">"R2026475"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># This week's event (or pass a known ID like "R2026027")</span></span>
+<span><span class="va">tid</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_current_tournament.html">pga_current_tournament</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">tournament_id</span></span>
+<span></span>
+<span><span class="va">tournament</span>  <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_tournaments.html">pga_tournaments</a></span><span class="op">(</span><span class="va">tid</span><span class="op">)</span></span>
+<span><span class="va">leaderboard</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_leaderboard.html">pga_leaderboard</a></span><span class="op">(</span><span class="va">tid</span><span class="op">)</span></span>
+<span><span class="va">field</span>       <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_field.html">pga_field</a></span><span class="op">(</span><span class="va">tid</span><span class="op">)</span></span>
+<span><span class="va">holes</span>       <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_leaderboard_holes.html">pga_leaderboard_holes</a></span><span class="op">(</span><span class="va">tid</span>, round <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">course</span>      <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_course_stats.html">pga_course_stats</a></span><span class="op">(</span><span class="va">tid</span><span class="op">)</span></span>
+<span><span class="va">weather</span>     <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_weather.html">pga_weather</a></span><span class="op">(</span><span class="va">tid</span><span class="op">)</span></span>
+<span><span class="va">tee_times</span>   <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_tee_times.html">pga_tee_times</a></span><span class="op">(</span><span class="va">tid</span><span class="op">)</span></span>
+<span><span class="va">coverage</span>    <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_coverage.html">pga_coverage</a></span><span class="op">(</span><span class="va">tid</span><span class="op">)</span></span>
+<span><span class="va">odds</span>        <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_odds.html">pga_odds</a></span><span class="op">(</span><span class="va">tid</span><span class="op">)</span></span>
+<span><span class="va">markets</span>     <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_odds_markets.html">pga_odds_markets</a></span><span class="op">(</span><span class="va">tid</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Deep dive on a player</span></span>
-<span><span class="va">player_id</span> <span class="op">&lt;-</span> <span class="st">"39971"</span>  <span class="co"># Sungjae Im</span></span>
-<span><span class="va">scorecard</span>  <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_scorecard.html">pga_scorecard</a></span><span class="op">(</span><span class="st">"R2026475"</span>, <span class="va">player_id</span><span class="op">)</span></span>
-<span><span class="va">shots</span>      <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_shot_details.html">pga_shot_details</a></span><span class="op">(</span><span class="st">"R2026475"</span>, <span class="va">player_id</span>, round <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="va">videos</span>     <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_tourcast_videos.html">pga_tourcast_videos</a></span><span class="op">(</span><span class="st">"R2026475"</span>, <span class="va">player_id</span>, round <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">player_id</span> <span class="op">&lt;-</span> <span class="st">"46046"</span>  <span class="co"># Scottie Scheffler</span></span>
+<span><span class="va">scorecard</span>  <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_scorecard.html">pga_scorecard</a></span><span class="op">(</span><span class="va">tid</span>, <span class="va">player_id</span><span class="op">)</span></span>
+<span><span class="va">sc_stats</span>   <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_scorecard_stats.html">pga_scorecard_stats</a></span><span class="op">(</span><span class="va">tid</span>, <span class="va">player_id</span><span class="op">)</span></span>
+<span><span class="va">shots</span>      <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_shot_details.html">pga_shot_details</a></span><span class="op">(</span><span class="va">tid</span>, <span class="va">player_id</span>, round <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">videos</span>     <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_tourcast_videos.html">pga_tourcast_videos</a></span><span class="op">(</span><span class="va">tid</span>, <span class="va">player_id</span>, round <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">lines</span>      <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_odds_player.html">pga_odds_player</a></span><span class="op">(</span><span class="va">tid</span>, <span class="va">player_id</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="player-research">Player Research<a class="anchor" aria-label="anchor" href="#player-research"></a>
 </h3>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Get all PGA Tour players</span></span>
+<code class="sourceCode R"><span><span class="co"># Get all PGA Tour players (2,700+)</span></span>
 <span><span class="va">players</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_players.html">pga_players</a></span><span class="op">(</span><span class="st">"R"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Filter to active players</span></span>
 <span><span class="va">active</span> <span class="op">&lt;-</span> <span class="va">players</span><span class="op">[</span><span class="va">players</span><span class="op">$</span><span class="va">is_active</span>, <span class="op">]</span></span>
 <span></span>
-<span><span class="co"># Korn Ferry Tour players</span></span>
-<span><span class="va">kft_players</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_players.html">pga_players</a></span><span class="op">(</span><span class="st">"H"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># Korn Ferry Tour / PGA Tour Americas</span></span>
+<span><span class="va">kft_players</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_players.html">pga_players</a></span><span class="op">(</span><span class="st">"H"</span><span class="op">)</span></span>
+<span><span class="va">americas</span>    <span class="op">&lt;-</span> <span class="fu"><a href="reference/pga_players.html">pga_players</a></span><span class="op">(</span><span class="st">"Y"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="news--video-content">News &amp; Video Content<a class="anchor" aria-label="anchor" href="#news--video-content"></a>
@@ -449,7 +586,7 @@
 <div class="section level2">
 <h2 id="stat-categories">Stat Categories<a class="anchor" aria-label="anchor" href="#stat-categories"></a>
 </h2>
-<p>The <code>stat_ids</code> dataset covers 340 stats across these categories:</p>
+<p>The <code>stat_ids</code> dataset covers 470+ stats across these categories:</p>
 <ul>
 <li>
 <strong>Strokes Gained</strong> — Total, Tee-to-Green, Off-the-Tee, Approach, Around-the-Green, Putting</li>
@@ -555,7 +692,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

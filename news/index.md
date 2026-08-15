@@ -1,5 +1,60 @@
 # Changelog
 
+## pgatouR 0.3.0
+
+### New features
+
+- Tour code `"Y"` (PGA Tour Americas) is now a first-class tour
+  alongside `"R"`, `"S"`, and `"H"`.
+- [`pga_current_tournament()`](https://walrusquant.github.io/pgatouR/reference/pga_current_tournament.md)
+  returns the site’s featured event for a tour (from
+  `orchestrator-config` web-config).
+- New tournament wrappers:
+  [`pga_field()`](https://walrusquant.github.io/pgatouR/reference/pga_field.md),
+  [`pga_field_stats()`](https://walrusquant.github.io/pgatouR/reference/pga_field_stats.md),
+  [`pga_tournament_overview()`](https://walrusquant.github.io/pgatouR/reference/pga_tournament_overview.md),
+  [`pga_tournament_past_results()`](https://walrusquant.github.io/pgatouR/reference/pga_tournament_past_results.md),
+  [`pga_weather()`](https://walrusquant.github.io/pgatouR/reference/pga_weather.md),
+  [`pga_course_stats()`](https://walrusquant.github.io/pgatouR/reference/pga_course_stats.md),
+  [`pga_course_stats_overview()`](https://walrusquant.github.io/pgatouR/reference/pga_course_stats_overview.md),
+  [`pga_hole_details()`](https://walrusquant.github.io/pgatouR/reference/pga_hole_details.md),
+  [`pga_leaderboard_holes()`](https://walrusquant.github.io/pgatouR/reference/pga_leaderboard_holes.md),
+  [`pga_leaderboard_strokes()`](https://walrusquant.github.io/pgatouR/reference/pga_leaderboard_strokes.md),
+  [`pga_leaderboard_stats()`](https://walrusquant.github.io/pgatouR/reference/pga_leaderboard_stats.md),
+  [`pga_group_locations()`](https://walrusquant.github.io/pgatouR/reference/pga_group_locations.md),
+  [`pga_shot_scatter()`](https://walrusquant.github.io/pgatouR/reference/pga_shot_scatter.md),
+  [`pga_scorecard_stats()`](https://walrusquant.github.io/pgatouR/reference/pga_scorecard_stats.md).
+- New standings wrappers:
+  [`pga_signature_standings()`](https://walrusquant.github.io/pgatouR/reference/pga_signature_standings.md),
+  [`pga_priority_rankings()`](https://walrusquant.github.io/pgatouR/reference/pga_priority_rankings.md),
+  [`pga_cup_standings()`](https://walrusquant.github.io/pgatouR/reference/pga_cup_standings.md),
+  [`pga_bubble()`](https://walrusquant.github.io/pgatouR/reference/pga_bubble.md),
+  [`pga_university_rankings()`](https://walrusquant.github.io/pgatouR/reference/pga_university_rankings.md),
+  [`pga_all_time_record_categories()`](https://walrusquant.github.io/pgatouR/reference/pga_all_time_record_categories.md),
+  [`pga_all_time_records()`](https://walrusquant.github.io/pgatouR/reference/pga_all_time_records.md).
+- New stats helpers:
+  [`pga_stat_catalog()`](https://walrusquant.github.io/pgatouR/reference/pga_stat_catalog.md),
+  [`pga_stat_leaders()`](https://walrusquant.github.io/pgatouR/reference/pga_stat_leaders.md),
+  [`pga_player_finish_stats()`](https://walrusquant.github.io/pgatouR/reference/pga_player_finish_stats.md).
+- Odds:
+  [`pga_odds_markets()`](https://walrusquant.github.io/pgatouR/reference/pga_odds_markets.md)
+  (market catalog) and
+  [`pga_odds_player()`](https://walrusquant.github.io/pgatouR/reference/pga_odds_player.md)
+  (per-player lines).
+  [`pga_odds()`](https://walrusquant.github.io/pgatouR/reference/pga_odds.md)
+  remains outright-to-win.
+- [`pga_leaderboard()`](https://walrusquant.github.io/pgatouR/reference/pga_leaderboard.md)
+  now also returns tee time, course, group, movement, total strokes,
+  amateur flag, and official/projected cup ranks.
+- [`pga_fedex_cup()`](https://walrusquant.github.io/pgatouR/reference/pga_fedex_cup.md)
+  uses the correct cup stat ID per tour (FedExCup, Schwab, Fortinet,
+  Americas points).
+
+### Testing / docs
+
+- Offline fixtures recaptured for the new operations. API reference last
+  checked 2026-08-15 against frontend `pgatour-prod-2.29.2`.
+
 ## pgatouR 0.2.0
 
 ### Breaking changes

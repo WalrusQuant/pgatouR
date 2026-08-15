@@ -1,10 +1,12 @@
 # Getting Started with pgatouR
 
 pgatouR gives you access to the PGA Tour’s data through a clean set of R
-functions. Every function returns a tibble, so the data is immediately
-ready for analysis with dplyr, ggplot2, or whatever you prefer.
+functions. Almost every function returns a tibble, so the data is
+immediately ready for analysis with dplyr, ggplot2, or whatever you
+prefer.
 
-This vignette walks through the main use cases.
+This article walks through the main use cases — live scoring, fields,
+course stats, player research, standings, and betting markets.
 
 ## Installation
 
@@ -21,18 +23,27 @@ library(pgatouR)
 Most functions need a tournament ID. These follow the format
 `{tour_code}{year}{number}`:
 
+- `"R2026027"` — 2026 FedEx St. Jude Championship (PGA Tour)
 - `"R2026475"` — 2026 Valspar Championship (PGA Tour)
-- `"R2026003"` — 2026 Sentry (PGA Tour)
-- `"S2026003"` — A Champions Tour event
+- `"Y2026018"` — A PGA Tour Americas event
 
-You can find these from PGA Tour URLs or by using
-[`pga_schedule()`](https://walrusquant.github.io/pgatouR/reference/pga_schedule.md)
-to list all tournaments for a season:
+For this week, skip the guesswork:
 
 ``` r
-# Full season schedule with dates, purse, course, champion
+tid <- pga_current_tournament()$tournament_id
+tid
+#> [1] "R2026027"
+
+# Champions, Korn Ferry, and Americas have their own featured events
+pga_current_tournament("Y")
+```
+
+A full season list lives on
+[`pga_schedule()`](https://walrusquant.github.io/pgatouR/reference/pga_schedule.md):
+
+``` r
 pga_schedule(2026)
-#> # A tibble: 48 × 15
+#> # A tibble: 49 × 15
 #>    tournament_id tournament_name       display_date status    purse     ...
 #>    <chr>         <chr>                 <chr>        <chr>     <chr>     ...
 #>  1 R2026006      Sony Open in Hawaii   Jan 15 - 18  COMPLETED $9,100,000
@@ -48,24 +59,28 @@ The tour code prefix tells you which tour:
 | `R`  | PGA Tour           |
 | `S`  | PGA Tour Champions |
 | `H`  | Korn Ferry Tour    |
+| `Y`  | PGA Tour Americas  |
 
 ## Tracking a Live Tournament
+
+The examples below use `tid` from
+[`pga_current_tournament()`](https://walrusquant.github.io/pgatouR/reference/pga_current_tournament.md).
+Any known ID works the same way.
 
 ### Leaderboard
 
 The leaderboard is the starting point for any tournament. It returns
-every player in the field with their scores.
+every player in the field with scores, tee times, movement, and
+official/projected cup ranks.
 
 ``` r
-lb <- pga_leaderboard("R2026475")
+lb <- pga_leaderboard(tid)
 lb
-#> # A tibble: 135 × 17
-#>    player_id first_name last_name display_name  country position total thru
-#>    <chr>     <chr>      <chr>     <chr>         <chr>   <chr>    <chr> <chr>
-#>  1 39971     Sungjae    Im        Sungjae Im    KOR     1        -7    F*
-#>  2 27064     Brandt     Snedeker  Brandt Snede… USA     2        -6    F
-#>  3 56630     Davis      Thompson  Davis Thomps… USA     T3       -5    F
-#>  4 39997     Jordan     Spieth    Jordan Spieth USA     T3       -5    7
+#> # A tibble: 69 × 20+
+#>    player_id first_name last_name position total tee_time             movement_direction
+#>    <chr>     <chr>      <chr>     <chr>    <chr> <chr>                <chr>
+#>  1 46046     Scottie    Scheffler 1        -11   2026-08-15T17:45:00Z CONSTANT
+#>  2 39971     Sungjae    Im        T2       -8    2026-08-15T17:45:00Z UP
 #>  ...
 ```
 
@@ -73,7 +88,35 @@ For a quick snapshot of just the top 15, use
 [`pga_current_leaders()`](https://walrusquant.github.io/pgatouR/reference/pga_current_leaders.md):
 
 ``` r
-pga_current_leaders("R2026475")
+pga_current_leaders(tid)
+```
+
+Hole-by-hole scores for the **entire field**, and the strokes-gained
+board:
+
+``` r
+pga_leaderboard_holes(tid, round = 2)
+pga_leaderboard_strokes(tid)
+pga_leaderboard_stats(tid)
+```
+
+### Field
+
+Who is in the event — including OWGR, withdrawn players, and alternates:
+
+``` r
+field <- pga_field(tid)
+field[, c("display_name", "role", "owgr", "withdrawn", "status")]
+#> # A tibble: 69 × 5
+#>    display_name      role   owgr  withdrawn status
+#>    <chr>             <chr>  <chr> <lgl>     <chr>
+#>  1 Scottie Scheffler player 1     FALSE     Uncut
+#>  2 Sungjae Im        player 20    FALSE     Uncut
+#>  ...
+
+# Course-fit or recent-form splits for the same field
+pga_field_stats(tid, "COURSE_FIT")
+pga_field_stats(tid, "CURRENT_FORM")
 ```
 
 ### Tee Times
@@ -81,7 +124,7 @@ pga_current_leaders("R2026475")
 See who’s grouped together and when they tee off:
 
 ``` r
-tt <- pga_tee_times("R2026475")
+tt <- pga_tee_times(tid)
 tt
 #> # A tibble: 270 × 12
 #>    round_number tee_time            start_tee display_name    group_number
@@ -97,29 +140,70 @@ tournament’s local timezone.
 
 ### Tournament Metadata
 
-Get the full picture — name, location, dates, format, current weather:
+Get the full picture — name, location, dates, format, snapshot weather:
 
 ``` r
-t <- pga_tournaments("R2026475")
+t <- pga_tournaments(tid)
 t$tournament_name
-#> "Valspar Championship"
+#> "FedEx St. Jude Championship"
 
 t$weather_condition
-#> "DAY_PARTLY_CLOUDY"
-
 t$weather_temp_f
-#> "73°F"
 ```
 
-The `courses` column is a list-column containing a tibble of course
-details for each tournament.
+The `courses` column is a list-column of course details. For hub-page
+copy, defending champions, and course blurbs:
+
+``` r
+ov <- pga_tournament_overview(tid)
+ov$overview
+ov$champions
+ov$courses
+```
+
+Hourly and daily forecast (richer than the snapshot on
+[`pga_tournaments()`](https://walrusquant.github.io/pgatouR/reference/pga_tournaments.md)):
+
+``` r
+wx <- pga_weather(tid)
+table(wx$scope)
+#> daily hourly
+#>     7     12
+```
+
+### Course stats
+
+Scoring averages, birdie/bogey counts, and rank for each hole, by round.
+Summary rows (out / in / total) have `is_summary = TRUE`.
+
+``` r
+cs <- pga_course_stats(tid)
+cs[cs$is_summary == FALSE, c("round_header", "hole_number", "par", "yards",
+                             "scoring_average", "birdies", "bogeys", "rank")]
+
+# Season hub (hardest / easiest holes, etc.)
+pga_course_stats_overview()
+
+# One hole: scoring mix plus who is on it
+hd <- pga_hole_details(tid, course_id = "513", hole = 18)
+hd$stats
+hd$groups
+```
+
+Historical field results for a prior playing of the same event (many
+tournaments have decades of seasons):
+
+``` r
+past <- pga_tournament_past_results(tid, year = 2025)
+past[, c("display_name", "position", "total", "to_par")]
+```
 
 ### Broadcast Schedule
 
 See what’s live and what’s coming up:
 
 ``` r
-pga_coverage("R2026475")
+pga_coverage(tid)
 #> # A tibble: 16 × 7
 #>    coverage_type          stream_title            round_number live_status
 #>    <chr>                  <chr>                          <int> <chr>
@@ -131,15 +215,22 @@ pga_coverage("R2026475")
 
 ### Odds
 
+Outright winner lines, then the rest of the book:
+
 ``` r
-odds <- pga_odds("R2026475")
+odds <- pga_odds(tid)
 odds
-#> # A tibble: 135 × 5
+#> # A tibble: 70 × 5
 #>    player_id odds    odds_sort odds_direction option_id
 #>    <chr>     <chr>       <dbl> <chr>          <chr>
-#>  1 34046     +650          7.5 UP             18776
-#>  2 36689     +6000        61   DOWN           18776
+#>  1 46046     -220         1.45 UP             ...
 #>  ...
+
+# Market catalog: To Win, matchups, finishes, groups, player props, 3-ball
+pga_odds_markets(tid)
+
+# Every quoted line for one player
+pga_odds_player(tid, "46046")
 ```
 
 ## Player Deep Dive
@@ -149,7 +240,7 @@ odds
 Get a player’s hole-by-hole results. Each row is one hole in one round:
 
 ``` r
-sc <- pga_scorecard("R2026475", "39971")
+sc <- pga_scorecard(tid, "46046")
 sc
 #> # A tibble: 18 × 11
 #>    round_number hole_number   par score status yardage round_score
@@ -164,6 +255,13 @@ The `status` column gives you the result on each hole (EAGLE, BIRDIE,
 PAR, BOGEY, etc.), and `round_score` is the running score relative to
 par.
 
+Scorecard-adjacent stat splits (strokes gained, scoring) for the same
+player:
+
+``` r
+pga_scorecard_stats(tid, "46046")
+```
+
 ### Shot-Level Tracking
 
 This is the most granular data available — every shot a player hits,
@@ -171,7 +269,7 @@ with distances, play-by-play descriptions, and coordinate data for
 visualization:
 
 ``` r
-shots <- pga_shot_details("R2026475", "39971", round = 1)
+shots <- pga_shot_details(tid, "46046", round = 1)
 shots
 #> # A tibble: 65 × 15+
 #>    hole_number stroke_number play_by_play                        distance
@@ -188,12 +286,24 @@ The response includes coordinate columns (prefixed with
 `to` positions of each stroke. These can be used to plot shot patterns
 on a course map.
 
+The hole-level shot cloud (every tracked landing spot on one hole):
+
+``` r
+pga_shot_scatter(tid, course = 513, hole = 1)
+```
+
+Live group locations on the course:
+
+``` r
+pga_group_locations(tid, round = 3)
+```
+
 ### Video Highlights
 
 Get video clips for a specific player in a tournament:
 
 ``` r
-pga_videos(player_ids = "39971", tournament_id = "475")
+pga_videos(player_ids = "46046", tournament_id = "027")
 #> # A tibble: 18 × 17
 #>    title                                  duration_secs hole_number pub_date
 #>    <chr>                                          <int> <chr>       <dttm>
@@ -204,13 +314,13 @@ pga_videos(player_ids = "39971", tournament_id = "475")
 
 Note:
 [`pga_videos()`](https://walrusquant.github.io/pgatouR/reference/pga_videos.md)
-takes the numeric tournament ID (`"475"`) without the tour code prefix,
-while most other functions use the full ID (`"R2026475"`).
+takes the numeric tournament ID (`"027"`) without the tour/year prefix,
+while most other functions use the full ID (`"R2026027"`).
 
 For shot-by-shot video clips (one clip per stroke in a round):
 
 ``` r
-pga_tourcast_videos("R2026475", "39971", round = 1)
+pga_tourcast_videos(tid, "46046", round = 1)
 ```
 
 ## Player Profiles
@@ -287,18 +397,21 @@ bio$text  # Character vector of bio paragraphs
 length(bio$amateur_highlights)  # 19 amateur achievements
 
 # Is a player in the current tournament?
-pga_player_tournament_status("39971")  # Sungjae Im
+pga_player_tournament_status("46046")
 #> # A tibble: 1 × 11
-#>    player_id tournament_name      position thru  score total
-#>    <chr>     <chr>                <chr>    <chr> <chr> <chr>
-#>  1 39971     Valspar Championship 1        F     -7    -7
+#>    player_id tournament_name               position thru  score total
+#>    <chr>     <chr>                         <chr>    <chr> <chr> <chr>
+#>  1 46046     FedEx St. Jude Championship   1        F     -11   -11
+
+# One stat across recent starts
+pga_player_finish_stats("46046", "02675")
 ```
 
 ## Statistics
 
 ### Pulling Stats
 
-pgatouR gives you access to 300+ PGA Tour statistics going back to 2004.
+pgatouR gives you access to 470+ PGA Tour statistics going back to 2004.
 Every stat has a unique ID:
 
 ``` r
@@ -314,19 +427,16 @@ sg
 #>  ...
 ```
 
-The result includes metadata as attributes:
-
-``` r
-attr(sg, "stat_title")       # "SG: Total"
-attr(sg, "stat_description") # Full description text
-attr(sg, "tour_avg")         # "0.000"
-attr(sg, "year")             # 2026
-```
+`stat_id`, `year`, and `stat_title` are real columns on the tibble (not
+attributes), so they survive dplyr verbs.
 
 ### Finding Stat IDs
 
-The package includes a bundled `stat_ids` dataset with all 340 known
-stat IDs:
+The package includes a bundled `stat_ids` dataset with 470+ known stat
+IDs.
+[`pga_stat_catalog()`](https://walrusquant.github.io/pgatouR/reference/pga_stat_catalog.md)
+pulls the same tree live from the stats hub if you want newly published
+IDs:
 
 ``` r
 # All strokes gained stats
@@ -349,6 +459,10 @@ unique(stat_ids$category)
 #> "Strokes Gained"    "Off The Tee"       "Approach the Green"
 #> "Around the Green"  "Putting"           "Scoring"
 #> "Streaks"           "Money/Finishes"    "Points/Rankings"
+
+# Live hub catalog + featured leaders
+pga_stat_catalog()
+pga_stat_leaders()
 ```
 
 ### Historical Comparisons
@@ -388,7 +502,7 @@ and FedExCup points:
 ``` r
 schedule <- pga_schedule(2026)
 schedule
-#> # A tibble: 48 × 15
+#> # A tibble: 49 × 15
 #>    tournament_id tournament_name       display_date status    purse
 #>    <chr>         <chr>                 <chr>        <chr>     <chr>
 #>  1 R2026006      Sony Open in Hawaii   Jan 15 - 18  COMPLETED $9,100,000
@@ -406,7 +520,9 @@ pga_leaderboard("R2026006")
 pga_schedule(2025)
 ```
 
-## FedExCup Standings
+## Standings
+
+### FedExCup
 
 ``` r
 fc <- pga_fedex_cup(2026)
@@ -420,22 +536,60 @@ fc
 #>  ...
 ```
 
+[`pga_cup_standings()`](https://walrusquant.github.io/pgatouR/reference/pga_cup_standings.md)
+is the simpler table and picks the right cup for the tour (FedExCup,
+Schwab, Fortinet, Americas points):
+
+``` r
+pga_cup_standings(2026)
+pga_cup_standings(2026, tour = "H")
+```
+
+Playoff / tour-card bubble around the cutoff, when the API is publishing
+one:
+
+``` r
+pga_bubble(tid)
+```
+
+### Signature events and priority rankings
+
+``` r
+# Aon / signature-event official and interim tables
+pga_signature_standings()
+
+# Exemption categories (winners of majors, career money, …)
+pr <- pga_priority_rankings(year = 2026)
+unique(pr$category)
+```
+
+### University and all-time records
+
+``` r
+pga_university_rankings(year = 2026)
+
+cats <- pga_all_time_record_categories()
+pga_all_time_records(cats$record_id[1])
+```
+
 ## Player Directory
 
-The full player directory has 2,400+ players across all tours:
+The full player directory has 2,700+ players on the PGA Tour (plus
+Champions, Korn Ferry, and Americas):
 
 ``` r
 players <- pga_players("R")
 nrow(players)
-#> 2486
+#> 2737
 
 # Filter to active players
 active <- players[players$is_active, ]
 nrow(active)
 
 # Other tours
-champions <- pga_players("S")
+champions  <- pga_players("S")
 korn_ferry <- pga_players("H")
+americas   <- pga_players("Y")
 ```
 
 ## News
@@ -464,15 +618,21 @@ pga_news(franchises = "power-rankings", limit = 5)
 
 ## Tips
 
+- **This week’s ID:**
+  [`pga_current_tournament()`](https://walrusquant.github.io/pgatouR/reference/pga_current_tournament.md)
+  is the same source the live site uses. Pass `"S"`, `"H"`, or `"Y"` for
+  the other tours.
 - **Rate limiting** is built in at 10 requests/second. You don’t need to
   add delays.
 - **Compressed payloads** (leaderboards, scorecards, tee times, shot
-  details, odds) are decompressed automatically. You always get a clean
-  tibble.
+  details, odds, scatter, scorecard stats) are decompressed
+  automatically. You always get a clean tibble.
 - **Error messages** use the cli package and will tell you exactly what
   went wrong (bad tournament ID, API errors, etc.).
 - **`stat_ids`** is lazy-loaded — just type `stat_ids` to access it, no
-  [`data()`](https://rdrr.io/r/utils/data.html) call needed.
+  [`data()`](https://rdrr.io/r/utils/data.html) call needed. Use
+  [`pga_stat_catalog()`](https://walrusquant.github.io/pgatouR/reference/pga_stat_catalog.md)
+  when you want the live hub instead of the bundled snapshot.
 - The **`@return`** section in each function’s help page
   ([`?pga_leaderboard`](https://walrusquant.github.io/pgatouR/reference/pga_leaderboard.md))
   describes the exact columns you’ll get back.

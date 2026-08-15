@@ -25,7 +25,8 @@ pga_stats(stat_id, year = NULL, tour = "R", event_query = NULL)
 
 - tour:
 
-  Character. Tour code (`"R"`, `"S"`, or `"H"`). Defaults to `"R"`.
+  Character. Tour code (`"R"`, `"S"`, `"H"`, or `"Y"`). Defaults to
+  `"R"`.
 
 - event_query:
 

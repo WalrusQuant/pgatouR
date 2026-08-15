@@ -48,6 +48,9 @@ and reads canned responses from `tests/testthat/fixtures/*.rds`. Re-run
 - `pga_rest_request(path)` — GETs from
   `https://data-api.pgatour.com/<path>`, same throttling + timeout +
   retry, returns parsed JSON.
+- `pga_config_request(path)` — GETs from
+  `https://orchestrator-config.pgatour.com/<path>` (default tournaments,
+  seasons). Same retry policy.
 - Query strings are cached in the `.pga_cache` environment, keyed by
   operation name, so each `.graphql` file is read from disk once per
   session.
@@ -97,9 +100,10 @@ names. Uses [`make.unique()`](https://rdrr.io/r/base/make.unique.html)
 so duplicate API headers don’t collide. Use this whenever building
 columns from dynamic API header strings (`StatDetails$statHeaders`,
 `pga_player_results` header labels, etc.). - `validate_tour_code()` —
-only `"R"` (PGA), `"S"` (Champions), `"H"` (Korn Ferry) are valid. -
-`safe_pluck(x, ...)` — nested list access that returns `NULL` instead of
-erroring; used heavily when reshaping heterogeneous API responses.
+`"R"` (PGA), `"S"` (Champions), `"H"` (Korn Ferry), `"Y"` (Americas) are
+valid. - `safe_pluck(x, ...)` — nested list access that returns `NULL`
+instead of erroring; used heavily when reshaping heterogeneous API
+responses.
 
 Row-binding uses
 [`vctrs::vec_rbind()`](https://vctrs.r-lib.org/reference/vec_bind.html)
@@ -134,12 +138,13 @@ through to the upstream `StatDetailEventQuery` variable (used for “Last
 
 Roughly one file per endpoint family (`R/leaderboard.R`,
 `R/scorecard.R`, `R/shot_details.R`, `R/stats.R`, `R/schedule.R`,
-`R/player_profile.R`, `R/players.R`, `R/tournaments.R`, `R/news.R`,
-`R/videos.R`, `R/odds.R`, `R/coverage.R`, `R/tee_times.R`,
-`R/fedex_cup.R`, `R/scorecard_comparison.R`, `R/current_leaders.R`,
-`R/content.R`). Exports are driven by roxygen `@export` tags — edit
-roxygen, then run `devtools::document()` to regenerate `NAMESPACE` and
-`man/`.
+`R/player_profile.R`, `R/players.R`, `R/tournaments.R`,
+`R/tournament_details.R`, `R/field.R`, `R/course_stats.R`,
+`R/standings.R`, `R/group_locations.R`, `R/news.R`, `R/videos.R`,
+`R/odds.R`, `R/coverage.R`, `R/tee_times.R`, `R/fedex_cup.R`,
+`R/scorecard_comparison.R`, `R/current_leaders.R`, `R/content.R`).
+Exports are driven by roxygen `@export` tags — edit roxygen, then run
+`devtools::document()` to regenerate `NAMESPACE` and `man/`.
 
 ### Tests + fixtures
 

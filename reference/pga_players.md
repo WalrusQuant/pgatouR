@@ -13,7 +13,7 @@ pga_players(tour = "R")
 - tour:
 
   Character. Tour code: `"R"` (PGA Tour), `"S"` (Champions), `"H"` (Korn
-  Ferry). Defaults to `"R"`.
+  Ferry), `"Y"` (Americas). Defaults to `"R"`.
 
 ## Value
 
