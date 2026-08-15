@@ -1,6 +1,6 @@
 #' PGA Tour Stat ID Lookup Table
 #'
-#' A tibble containing all known PGA Tour stat IDs, names, and categories.
+#' A tibble containing known PGA Tour stat IDs, names, and categories.
 #' Use with [pga_stats()] to look up valid stat IDs.
 #'
 #' @format A tibble with 4 columns:

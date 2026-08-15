@@ -14,7 +14,8 @@ SG: Total). When length > 1, results are stacked with a \code{stat_id} column.}
 (default) uses the current season. When length > 1, results are stacked
 with a \code{year} column.}
 
-\item{tour}{Character. Tour code (\code{"R"}, \code{"S"}, or \code{"H"}). Defaults to \code{"R"}.}
+\item{tour}{Character. Tour code (\code{"R"}, \code{"S"}, \code{"H"}, or \code{"Y"}).
+Defaults to \code{"R"}.}
 
 \item{event_query}{Optional named list passed through as the GraphQL
 \code{StatDetailEventQuery} variable (e.g., for "Last 5 events" or FedEx Fall

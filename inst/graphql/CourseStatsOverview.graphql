@@ -1,0 +1,19 @@
+query CourseStatsOverview($tourCode: TourCode!, $year: Int) {
+  courseStatsOverview(tourCode: $tourCode, year: $year) {
+    tourCode
+    year
+    categories {
+      header
+      detailId
+      items {
+        displayName
+        rank
+        image
+        details {
+          value
+          label
+        }
+      }
+    }
+  }
+}

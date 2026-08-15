@@ -1,0 +1,6 @@
+query LeaderboardStrokesCompressed($leaderboardStrokesCompressedId: ID!) {
+  leaderboardStrokesCompressed(id: $leaderboardStrokesCompressedId) {
+    id
+    payload
+  }
+}

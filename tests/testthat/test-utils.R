@@ -10,6 +10,7 @@ test_that("validate_tour_code accepts valid codes", {
   expect_invisible(validate_tour_code("R"))
   expect_invisible(validate_tour_code("S"))
   expect_invisible(validate_tour_code("H"))
+  expect_invisible(validate_tour_code("Y"))
 })
 
 test_that("validate_tour_code rejects invalid codes", {

@@ -1,0 +1,8 @@
+query ScatterDataCompressed($tournamentId: String!, $course: Int!, $hole: Int!) {
+  scatterDataCompressed(tournamentId: $tournamentId, course: $course, hole: $hole) {
+    courseId
+    hole
+    tournamentId
+    payload
+  }
+}

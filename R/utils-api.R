@@ -1,6 +1,7 @@
 # API constants
 .pga_graphql_url <- "https://orchestrator.pgatour.com/graphql"
 .pga_rest_url <- "https://data-api.pgatour.com"
+.pga_config_url <- "https://orchestrator-config.pgatour.com"
 .pga_api_key_default <- "da2-gsrx5bibzbb4njvhl7t37wqyl4"
 
 # Cache environment for query strings
@@ -145,6 +146,36 @@ pga_rest_request <- function(path) {
   if (status >= 400) {
     cli_abort(c(
       "PGA Tour REST API request failed with HTTP {status}.",
+      "i" = "Path: {.val {path}}"
+    ))
+  }
+
+  pga_parse_json(resp, path)
+}
+
+#' GET from orchestrator-config (default tournaments, seasons, feature flags).
+#' @param path Character. URL path to append (no leading slash required).
+#' @return Parsed JSON as a list.
+#' @noRd
+pga_config_request <- function(path) {
+  path <- sub("^/+", "", path)
+  if (pga_is_verbose()) {
+    cli_inform(c("i" = "CONFIG GET {.val {path}}"))
+  }
+
+  resp <- request(.pga_config_url) |>
+    req_url_path_append(path) |>
+    req_user_agent("pgatouR R package (https://github.com/WalrusQuant/pgatouR)") |>
+    req_throttle(rate = 10) |>
+    req_timeout(30) |>
+    req_retry(max_tries = 3, is_transient = .pga_is_transient) |>
+    req_error(is_error = function(resp) FALSE) |>
+    req_perform()
+
+  status <- resp_status(resp)
+  if (status >= 400) {
+    cli_abort(c(
+      "PGA Tour config API request failed with HTTP {status}.",
       "i" = "Path: {.val {path}}"
     ))
   }

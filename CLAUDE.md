@@ -32,6 +32,7 @@ Tests use testthat 3e (edition 3). The suite is offline-only: every test mocks `
 
 - `pga_graphql_request(operation_name, variables)` — POSTs to `https://orchestrator.pgatour.com/graphql`, loads the query text from `inst/graphql/<operation_name>.graphql`, sends the `x-api-key` header, throttles at 10 req/sec via `req_throttle`, applies `req_timeout(30)` + `req_retry(max_tries = 3)` on 408/429/5xx, and returns the `data` field. GraphQL `errors` and HTTP ≥400 both abort with `cli_abort`. Non-JSON 200 responses are caught and surfaced via `pga_parse_json()`.
 - `pga_rest_request(path)` — GETs from `https://data-api.pgatour.com/<path>`, same throttling + timeout + retry, returns parsed JSON.
+- `pga_config_request(path)` — GETs from `https://orchestrator-config.pgatour.com/<path>` (default tournaments, seasons). Same retry policy.
 - Query strings are cached in the `.pga_cache` environment, keyed by operation name, so each `.graphql` file is read from disk once per session.
 - The `x-api-key` is a public key embedded in the PGA Tour frontend. The bundled default lives in `.pga_api_key_default`; `pga_api_key()` prefers the `PGA_API_KEY` env var so users can swap keys without reinstalling if the frontend key rotates.
 
@@ -49,7 +50,7 @@ Several GraphQL operations (any ending in `Compressed`, e.g. `LeaderboardCompres
 `R/utils-parse.R`:
 - `to_snake_case()` / `clean_names()` — convert API camelCase to snake_case columns.
 - `make_unique_snake(x)` — sanitize free-form labels (with spaces/punctuation) into unique snake_case column names. Uses `make.unique()` so duplicate API headers don't collide. Use this whenever building columns from dynamic API header strings (`StatDetails$statHeaders`, `pga_player_results` header labels, etc.).
-- `validate_tour_code()` — only `"R"` (PGA), `"S"` (Champions), `"H"` (Korn Ferry) are valid.
+- `validate_tour_code()` — `"R"` (PGA), `"S"` (Champions), `"H"` (Korn Ferry), `"Y"` (Americas) are valid.
 - `safe_pluck(x, ...)` — nested list access that returns `NULL` instead of erroring; used heavily when reshaping heterogeneous API responses.
 
 Row-binding uses `vctrs::vec_rbind()` (not `do.call(rbind, ...)`) so heterogeneous columns across chunks get filled with `NA` instead of erroring. `vec_cbind()` is the equivalent for column binding.
@@ -66,7 +67,7 @@ Row-binding uses `vctrs::vec_rbind()` (not `do.call(rbind, ...)`) so heterogeneo
 
 ### Function → file map
 
-Roughly one file per endpoint family (`R/leaderboard.R`, `R/scorecard.R`, `R/shot_details.R`, `R/stats.R`, `R/schedule.R`, `R/player_profile.R`, `R/players.R`, `R/tournaments.R`, `R/news.R`, `R/videos.R`, `R/odds.R`, `R/coverage.R`, `R/tee_times.R`, `R/fedex_cup.R`, `R/scorecard_comparison.R`, `R/current_leaders.R`, `R/content.R`). Exports are driven by roxygen `@export` tags — edit roxygen, then run `devtools::document()` to regenerate `NAMESPACE` and `man/`.
+Roughly one file per endpoint family (`R/leaderboard.R`, `R/scorecard.R`, `R/shot_details.R`, `R/stats.R`, `R/schedule.R`, `R/player_profile.R`, `R/players.R`, `R/tournaments.R`, `R/tournament_details.R`, `R/field.R`, `R/course_stats.R`, `R/standings.R`, `R/group_locations.R`, `R/news.R`, `R/videos.R`, `R/odds.R`, `R/coverage.R`, `R/tee_times.R`, `R/fedex_cup.R`, `R/scorecard_comparison.R`, `R/current_leaders.R`, `R/content.R`). Exports are driven by roxygen `@export` tags — edit roxygen, then run `devtools::document()` to regenerate `NAMESPACE` and `man/`.
 
 ### Tests + fixtures
 

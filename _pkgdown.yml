@@ -16,25 +16,51 @@ navbar:
 reference:
   - title: Live Tournament Data
     contents:
+      - pga_current_tournament
       - pga_leaderboard
       - pga_current_leaders
+      - pga_leaderboard_holes
+      - pga_leaderboard_strokes
+      - pga_leaderboard_stats
       - pga_tee_times
+      - pga_field
+      - pga_field_stats
       - pga_scorecard
+      - pga_scorecard_stats
       - pga_shot_details
+      - pga_shot_scatter
+      - pga_group_locations
       - pga_odds
+      - pga_odds_markets
+      - pga_odds_player
       - pga_coverage
+      - pga_weather
 
   - title: Statistics & Standings
     contents:
       - pga_stats
+      - pga_stat_catalog
+      - pga_stat_leaders
       - pga_fedex_cup
+      - pga_cup_standings
+      - pga_signature_standings
+      - pga_priority_rankings
+      - pga_bubble
       - pga_scorecard_comparison
+      - pga_all_time_record_categories
+      - pga_all_time_records
+      - pga_university_rankings
 
   - title: Players & Tournaments
     contents:
       - pga_players
       - pga_tournaments
+      - pga_tournament_overview
+      - pga_tournament_past_results
       - pga_schedule
+      - pga_course_stats
+      - pga_course_stats_overview
+      - pga_hole_details
 
   - title: Player Profiles
     contents:
@@ -42,6 +68,7 @@ reference:
       - pga_player_career
       - pga_player_results
       - pga_player_stats
+      - pga_player_finish_stats
       - pga_player_bio
       - pga_player_tournament_status
 

@@ -30,6 +30,14 @@ mock_rest <- function(fixture_name, env = parent.frame()) {
   )
 }
 
+mock_config <- function(fixture_name, env = parent.frame()) {
+  fixture <- read_fixture(fixture_name)
+  testthat::local_mocked_bindings(
+    pga_config_request = function(path) fixture,
+    .env = env
+  )
+}
+
 # Route GraphQL calls by operation name to multiple fixtures. Useful for
 # multi-stat / multi-year tests where one R function makes several calls.
 mock_graphql_router <- function(routes, env = parent.frame()) {

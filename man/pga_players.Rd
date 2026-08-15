@@ -8,7 +8,7 @@ pga_players(tour = "R")
 }
 \arguments{
 \item{tour}{Character. Tour code: \code{"R"} (PGA Tour), \code{"S"} (Champions),
-\code{"H"} (Korn Ferry). Defaults to \code{"R"}.}
+\code{"H"} (Korn Ferry), \code{"Y"} (Americas). Defaults to \code{"R"}.}
 }
 \value{
 A tibble with one row per player.

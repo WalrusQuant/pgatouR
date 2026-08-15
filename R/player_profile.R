@@ -357,3 +357,53 @@ pga_player_tournament_status <- function(player_id) {
     display_mode = status$displayMode %||% NA_character_
   )
 }
+
+#' Get a player's recent values for one stat
+#'
+#' Event-by-event series for a single stat (e.g. SG: Total across the last
+#' ten starts).
+#'
+#' @param player_id Character. Player ID.
+#' @param stat_id Character. Stat ID (see [stat_ids]).
+#' @param tour Character. Tour code. Defaults to `"R"`.
+#' @return A tibble with one row per event, plus player-level metadata
+#'   columns (`rank`, `player_avg`, `tour_avg`).
+#' @export
+#' @examples
+#' \dontrun{
+#' pga_player_finish_stats("46046", "02675")
+#' }
+pga_player_finish_stats <- function(player_id, stat_id, tour = "R") {
+  validate_tour_code(tour)
+  data <- pga_graphql_request(
+    "PlayerFinishStats",
+    list(playerId = player_id, statId = stat_id, tourCode = tour)
+  )
+  fs <- data$playerFinishStats
+  if (is.null(fs)) {
+    cli_abort("No finish stats returned for player {.val {player_id}}, stat {.val {stat_id}}.")
+  }
+
+  values <- fs$statValues
+  if (is.null(values) || length(values) == 0) {
+    return(tibble())
+  }
+
+  tibble(
+    player_id = fs$playerId %||% player_id,
+    display_name = fs$displayName %||% NA_character_,
+    country = fs$countryName %||% NA_character_,
+    country_code = fs$countryCode %||% NA_character_,
+    stat_id = fs$statId %||% stat_id,
+    stat_name = fs$statName %||% NA_character_,
+    rank = fs$rank %||% NA_character_,
+    player_avg = fs$playerAvg %||% NA_character_,
+    player_avg_label = fs$playerAvgLabel %||% NA_character_,
+    tour_avg = fs$tourAvg %||% NA_character_,
+    value = vapply(values, function(v) as_chr(v$value), character(1)),
+    display_value = vapply(values, function(v) as_chr(v$displayValue), character(1)),
+    date = vapply(values, function(v) as_chr(v$date), character(1)),
+    display_date = vapply(values, function(v) as_chr(v$displayDate), character(1)),
+    tournament_name = vapply(values, function(v) as_chr(v$tournamentName), character(1))
+  )
+}

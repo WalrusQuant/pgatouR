@@ -1,0 +1,21 @@
+query PlayerFinishStats($playerId: ID!, $statId: String!, $tourCode: TourCode!) {
+  playerFinishStats(playerId: $playerId, statId: $statId, tourCode: $tourCode) {
+    playerId
+    statId
+    statName
+    displayName
+    countryCode
+    countryName
+    rank
+    tourAvg
+    playerAvg
+    playerAvgLabel
+    statValues {
+      value
+      displayValue
+      date
+      displayDate
+      tournamentName
+    }
+  }
+}

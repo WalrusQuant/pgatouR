@@ -13,7 +13,8 @@
 #' @param year Integer vector or `NULL`. One or more season years. `NULL`
 #'   (default) uses the current season. When length > 1, results are stacked
 #'   with a `year` column.
-#' @param tour Character. Tour code (`"R"`, `"S"`, or `"H"`). Defaults to `"R"`.
+#' @param tour Character. Tour code (`"R"`, `"S"`, `"H"`, or `"Y"`).
+#'   Defaults to `"R"`.
 #' @param event_query Optional named list passed through as the GraphQL
 #'   `StatDetailEventQuery` variable (e.g., for "Last 5 events" or FedEx Fall
 #'   filters). Most callers can leave this `NULL`.
@@ -118,4 +119,86 @@ pga_stats_one <- function(stat_id, year, tour, event_query) {
   }
 
   base
+}
+
+#' Get the live stat catalog
+#'
+#' Categories and stat IDs from `StatOverview` — the same tree the stats
+#' hub uses. Useful for refreshing [stat_ids] or discovering new stats.
+#'
+#' @param tour Character. Tour code. Defaults to `"R"`.
+#' @param year Integer or `NULL`. Season year.
+#' @return A tibble with `stat_id`, `stat_name`, `category`, `subcategory`.
+#' @export
+#' @examples
+#' \dontrun{
+#' pga_stat_catalog()
+#' }
+pga_stat_catalog <- function(tour = "R", year = NULL) {
+  ov <- stat_overview_payload(tour, year)
+  pieces <- list()
+  for (cat in ov$categories %||% list()) {
+    for (sub in cat$subCategories %||% list()) {
+      stats <- sub$stats %||% list()
+      if (length(stats) == 0) next
+      pieces[[length(pieces) + 1]] <- tibble(
+        stat_id = vapply(stats, function(s) s$statId %||% NA_character_, character(1)),
+        stat_name = vapply(stats, function(s) s$statTitle %||% NA_character_, character(1)),
+        category = cat$displayName %||% NA_character_,
+        subcategory = sub$displayName %||% NA_character_,
+        category_code = cat$category %||% NA_character_
+      )
+    }
+  }
+  if (length(pieces) == 0) {
+    return(tibble())
+  }
+  do.call(vec_rbind, pieces)
+}
+
+#' Get featured stat leaders
+#'
+#' Top of the leaderboard for the stats hub's featured stats (from
+#' `StatOverview$stats`).
+#'
+#' @param tour Character. Tour code. Defaults to `"R"`.
+#' @param year Integer or `NULL`. Season year.
+#' @return A tibble with one row per player per featured stat.
+#' @export
+pga_stat_leaders <- function(tour = "R", year = NULL) {
+  ov <- stat_overview_payload(tour, year)
+  pieces <- list()
+  for (stat in ov$stats %||% list()) {
+    players <- stat$players %||% list()
+    if (length(players) == 0) next
+    pieces[[length(pieces) + 1]] <- tibble(
+      tour = ov$tourCode %||% tour,
+      year = as.integer(ov$year %||% year %||% NA_integer_),
+      stat_id = stat$statId %||% NA_character_,
+      stat_name = stat$statName %||% NA_character_,
+      tour_avg = stat$tourAvg %||% NA_character_,
+      player_id = vapply(players, function(p) p$playerId %||% NA_character_, character(1)),
+      player_name = vapply(players, function(p) p$playerName %||% NA_character_, character(1)),
+      country = vapply(players, function(p) p$country %||% NA_character_, character(1)),
+      country_flag = vapply(players, function(p) p$countryFlag %||% NA_character_, character(1)),
+      rank = vapply(players, function(p) p$rank %||% NA_character_, character(1)),
+      value = vapply(players, function(p) p$statValue %||% NA_character_, character(1))
+    )
+  }
+  if (length(pieces) == 0) {
+    return(tibble())
+  }
+  do.call(vec_rbind, pieces)
+}
+
+stat_overview_payload <- function(tour, year) {
+  validate_tour_code(tour)
+  variables <- list(tourCode = tour)
+  if (!is.null(year)) variables$year <- as.integer(year)
+  data <- pga_graphql_request("StatOverview", variables)
+  ov <- data$statOverview
+  if (is.null(ov)) {
+    cli_abort("No stat overview returned for tour {.val {tour}}.")
+  }
+  ov
 }

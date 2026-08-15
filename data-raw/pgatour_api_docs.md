@@ -1,7 +1,11 @@
 # PGA Tour GraphQL API Documentation
 
 Reverse-engineered from pgatour.com network traffic (HAR captures).
-Captured: 2026-03-19
+Captured: 2026-03-19; re-checked 2026-08-15 against frontend `pgatour-prod-2.29.2`.
+Public API key unchanged. Tour `Y` (PGA Tour Americas) is first-class.
+See the 0.3.0 wrappers for Field, TournamentPastResults, CourseStats,
+LeaderboardHoleByHole, Weather, SignatureStandings, PriorityRankings,
+and REST `/odds/tournament/{id}` + `/leaderboard/{id}`.
 
 ## Base Endpoint
 

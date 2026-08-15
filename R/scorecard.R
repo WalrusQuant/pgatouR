@@ -80,3 +80,30 @@ pga_scorecard <- function(tournament_id, player_id) {
   other_cols <- setdiff(names(result), front_cols)
   result[, c(front_cols[front_cols %in% names(result)], other_cols)]
 }
+
+#' Get compressed scorecard stats
+#'
+#' Strokes-gained and scoring splits shown next to a player's scorecard.
+#'
+#' @param tournament_id Character. Tournament ID.
+#' @param player_id Character. Player ID.
+#' @return A tibble of scorecard stats. Column names follow the upstream
+#'   payload (snake_cased).
+#' @export
+#' @examples
+#' \dontrun{
+#' pga_scorecard_stats("R2026027", "46046")
+#' }
+pga_scorecard_stats <- function(tournament_id, player_id) {
+  data <- pga_graphql_request(
+    "ScorecardStatsV3Compressed",
+    list(scorecardStatsV3CompressedId = tournament_id, playerId = player_id)
+  )
+  payload <- data$scorecardStatsV3Compressed$payload
+  if (is.null(payload)) {
+    cli_abort(
+      "No scorecard stats returned for player {.val {player_id}} in tournament {.val {tournament_id}}."
+    )
+  }
+  flatten_decompressed(pga_decompress(payload))
+}

@@ -1,0 +1,34 @@
+query UniversityRankings($year: Int, $week: Int) {
+  universityRankings(year: $year, week: $week) {
+    year
+    displayYear
+    throughText
+    description
+    disclaimer
+    weekNum
+    title
+    sponsorName
+    yearPills {
+      year
+      displaySeason
+    }
+    weekPills {
+      week
+      displayWeek
+    }
+    players {
+      playerId
+      rank
+      rankColor
+      rankingMovement
+      rankingMovementAmount
+      displayName
+      schoolName
+      country
+      wins
+      top10
+      avg
+      events
+    }
+  }
+}

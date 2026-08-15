@@ -17,7 +17,7 @@ A tibble with 4 columns:
 stat_ids
 }
 \description{
-A tibble containing all known PGA Tour stat IDs, names, and categories.
+A tibble containing known PGA Tour stat IDs, names, and categories.
 Use with \code{\link[=pga_stats]{pga_stats()}} to look up valid stat IDs.
 }
 \examples{

@@ -1,3 +1,35 @@
+# pgatouR 0.3.0
+
+## New features
+
+* Tour code `"Y"` (PGA Tour Americas) is now a first-class tour alongside
+  `"R"`, `"S"`, and `"H"`.
+* `pga_current_tournament()` returns the site's featured event for a tour
+  (from `orchestrator-config` web-config).
+* New tournament wrappers: `pga_field()`, `pga_field_stats()`,
+  `pga_tournament_overview()`, `pga_tournament_past_results()`,
+  `pga_weather()`, `pga_course_stats()`, `pga_course_stats_overview()`,
+  `pga_hole_details()`, `pga_leaderboard_holes()`,
+  `pga_leaderboard_strokes()`, `pga_leaderboard_stats()`,
+  `pga_group_locations()`, `pga_shot_scatter()`, `pga_scorecard_stats()`.
+* New standings wrappers: `pga_signature_standings()`,
+  `pga_priority_rankings()`, `pga_cup_standings()`, `pga_bubble()`,
+  `pga_university_rankings()`, `pga_all_time_record_categories()`,
+  `pga_all_time_records()`.
+* New stats helpers: `pga_stat_catalog()`, `pga_stat_leaders()`,
+  `pga_player_finish_stats()`.
+* Odds: `pga_odds_markets()` (market catalog) and `pga_odds_player()`
+  (per-player lines). `pga_odds()` remains outright-to-win.
+* `pga_leaderboard()` now also returns tee time, course, group, movement,
+  total strokes, amateur flag, and official/projected cup ranks.
+* `pga_fedex_cup()` uses the correct cup stat ID per tour (FedExCup,
+  Schwab, Fortinet, Americas points).
+
+## Testing / docs
+
+* Offline fixtures recaptured for the new operations. API reference last
+  checked 2026-08-15 against frontend `pgatour-prod-2.29.2`.
+
 # pgatouR 0.2.0
 
 ## Breaking changes

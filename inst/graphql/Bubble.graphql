@@ -1,0 +1,42 @@
+query Bubble($tourCode: TourCode!, $tournamentId: ID!) {
+  bubble(tourCode: $tourCode, tournamentId: $tournamentId) {
+    bubbleId
+    bubbleType
+    cutoffIncluded
+    rankingColumnHeader
+    items {
+      info
+      infoDesc
+      standings {
+        id
+        title
+        live
+        description
+        rankingsHeader
+        rankings {
+          ... on CupRankingPlayer {
+            __typename
+            position
+            movement
+            movementDirection
+            id
+            name
+            playerCountry
+            totals {
+              display
+              value
+            }
+            total
+            winner
+            tourBound
+            pointsDelta
+          }
+          ... on CupRankingPlayerInfoRow {
+            __typename
+            text
+          }
+        }
+      }
+    }
+  }
+}

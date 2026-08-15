@@ -7,7 +7,7 @@
 pga_speed_rounds(tour = "R")
 }
 \arguments{
-\item{tour}{Character. Tour code (\code{"R"}, \code{"S"}, or \code{"H"}).
+\item{tour}{Character. Tour code (\code{"R"}, \code{"S"}, \code{"H"}, or \code{"Y"}).
 Defaults to \code{"R"}.}
 }
 \value{

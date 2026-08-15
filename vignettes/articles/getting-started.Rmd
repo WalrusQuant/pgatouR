@@ -33,7 +33,7 @@ Most functions need a tournament ID. These follow the format `{tour_code}{year}{
 - `"R2026003"` — 2026 Sentry (PGA Tour)
 - `"S2026003"` — A Champions Tour event
 
-You can find these from PGA Tour URLs or by using `pga_schedule()` to list all tournaments for a season:
+You can find these from PGA Tour URLs, `pga_current_tournament()` for this week, or `pga_schedule()` for a full season:
 
 ```{r schedule-ids}
 # Full season schedule with dates, purse, course, champion
@@ -54,6 +54,7 @@ The tour code prefix tells you which tour:
 | `R`  | PGA Tour |
 | `S`  | PGA Tour Champions |
 | `H`  | Korn Ferry Tour |
+| `Y`  | PGA Tour Americas |
 
 ## Tracking a Live Tournament
 
@@ -408,7 +409,7 @@ fc
 
 ## Player Directory
 
-The full player directory has 2,400+ players across all tours:
+The full player directory has 2,700+ players on the PGA Tour (plus Champions, Korn Ferry, and Americas):
 
 ```{r players}
 players <- pga_players("R")

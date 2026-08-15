@@ -1,0 +1,58 @@
+query TournamentOverview($tournamentId: ID!) {
+  tournamentOverview(tournamentId: $tournamentId) {
+    beautyImage
+    ticketsURL
+    tourcastURL
+    tourcastURLWeb
+    shareURL
+    eventGuideURL
+    formatType
+    overview {
+      label
+      value
+      detail
+      secondaryDetail
+      wide
+      smallCopy
+    }
+    defendingChampion {
+      ...TournamentChampionFragment
+    }
+    pastChampions {
+      ...TournamentChampionFragment
+    }
+    courses {
+      id
+      image
+      name
+      city
+      state
+      country
+      overview {
+        label
+        value
+        detail
+        secondaryDetail
+        wide
+        smallCopy
+      }
+    }
+    tournamentCategoryInfo {
+      type
+      label
+    }
+  }
+}
+
+fragment TournamentChampionFragment on TournamentChampion {
+  countryCode
+  displayName
+  displaySeason
+  headshot
+  playerId
+  score
+  seed
+  title
+  total
+  year
+}

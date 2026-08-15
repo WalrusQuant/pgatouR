@@ -1,0 +1,32 @@
+query GroupLocations($tournamentId: ID!, $round: Int!) {
+  groupLocations(tournamentId: $tournamentId, round: $round) {
+    tournamentId
+    courses {
+      ...GroupCourseFragment
+    }
+  }
+}
+
+fragment GroupCourseFragment on GroupLocationCourse {
+  tournamentAndCourseId
+  tournamentId
+  courseId
+  round
+  courseName
+  holes {
+    holeNumber
+    par
+    yardage
+    groups {
+      groupSort
+      groupNum
+      round
+      location
+      color
+      playerData {
+        addressingBall
+        nextToHit
+      }
+    }
+  }
+}

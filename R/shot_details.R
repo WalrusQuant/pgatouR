@@ -83,3 +83,37 @@ pga_shot_details <- function(tournament_id, player_id, round,
 
   do.call(vec_rbind, all_strokes)
 }
+
+#' Get hole-level shot scatter
+#'
+#' Decompresses `ScatterDataCompressed` — the shot cloud for a single hole
+#' (landing spots, lie, etc.). Column names follow the upstream payload
+#' (snake_cased).
+#'
+#' @param tournament_id Character. Tournament ID.
+#' @param course Integer or character. Course ID.
+#' @param hole Integer. Hole number.
+#' @return A tibble of shot-scatter points.
+#' @export
+#' @examples
+#' \dontrun{
+#' pga_shot_scatter("R2026027", course = 513, hole = 1)
+#' }
+pga_shot_scatter <- function(tournament_id, course, hole) {
+  data <- pga_graphql_request(
+    "ScatterDataCompressed",
+    list(
+      tournamentId = tournament_id,
+      course = as.integer(course),
+      hole = as.integer(hole)
+    )
+  )
+  sc <- data$scatterDataCompressed
+  payload <- sc$payload
+  if (is.null(payload)) {
+    cli_abort(
+      "No scatter data returned for hole {hole} at course {.val {course}}."
+    )
+  }
+  flatten_decompressed(pga_decompress(payload))
+}

@@ -48,7 +48,7 @@ pga_odds_interactivity <- function() {
 #' content discovery surface; returned as a nested list because the entry
 #' shapes are heterogeneous.
 #'
-#' @param tour Character. Tour code (`"R"`, `"S"`, or `"H"`).
+#' @param tour Character. Tour code (`"R"`, `"S"`, `"H"`, or `"Y"`).
 #'   Defaults to `"R"`.
 #' @return The parsed JSON response as a nested R list.
 #' @export

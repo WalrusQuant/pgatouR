@@ -1,0 +1,43 @@
+query TourCupStandings($tour: TourCode!, $year: Int!) {
+  defaultTourCup(tour: $tour, year: $year) {
+    id
+    title
+    live
+    logo
+    showInLeaderboard
+    options
+    description
+    detailCopy
+    rankingsHeader
+    rankings {
+      ... on CupRankingPlayer {
+        __typename
+        position
+        movement
+        movementDirection
+        id
+        name
+        playerCountry
+        totals {
+          display
+          value
+        }
+        total
+        winner
+      }
+      ... on CupRankingPlayerInfoRow {
+        __typename
+        text
+      }
+    }
+    winner {
+      id
+      name
+      playerCountry
+      totalLabel
+      totalValue
+    }
+    partner
+    partnerLink
+  }
+}

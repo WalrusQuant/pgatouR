@@ -3,7 +3,7 @@
 #' Returns the full player directory for a tour.
 #'
 #' @param tour Character. Tour code: `"R"` (PGA Tour), `"S"` (Champions),
-#'   `"H"` (Korn Ferry). Defaults to `"R"`.
+#'   `"H"` (Korn Ferry), `"Y"` (Americas). Defaults to `"R"`.
 #' @return A tibble with one row per player.
 #' @export
 #' @examples
@@ -37,8 +37,4 @@ pga_players <- function(tour = "R") {
   )
 }
 
-#' Null-coalescing operator
-#' @noRd
-`%||%` <- function(x, y) {
-  if (is.null(x)) y else x
-}
+

@@ -18,7 +18,9 @@ pga_fedex_cup <- function(year = as.integer(format(Sys.Date(), "%Y")),
                           event_query = NULL) {
   validate_tour_code(tour)
 
-  variables <- list(tourCode = tour, id = "02671", year = as.integer(year))
+  cup_ids <- c(R = "02671", S = "193", H = "02668", Y = "2692")
+  cup_id <- unname(cup_ids[[tour]] %||% "02671")
+  variables <- list(tourCode = tour, id = cup_id, year = as.integer(year))
   if (!is.null(event_query)) variables$eventQuery <- event_query
 
   data <- pga_graphql_request("TourCupSplit", variables)

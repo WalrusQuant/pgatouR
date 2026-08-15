@@ -23,8 +23,11 @@ pga_stats("02675")
 # Multiple stats or multiple years in a single call
 pga_stats(c("02675", "101"), year = 2023:2024)
 
-# Full player directory (2,400+ players)
+# Full player directory (2,700+ players)
 pga_players()
+
+# This week's featured event
+pga_current_tournament()
 
 # Hole-by-hole scorecard
 pga_scorecard("R2026475", "39971")
@@ -42,20 +45,32 @@ pga_schedule(2025)
 
 | Function | Description |
 |---|---|
-| `pga_leaderboard(tournament_id)` | Full leaderboard with scores, positions, and round-by-round results |
+| `pga_current_tournament(tour)` | Featured / this-week tournament ID for a tour |
+| `pga_leaderboard(tournament_id)` | Full leaderboard with scores, positions, movement, tee times, and round-by-round results |
 | `pga_current_leaders(tournament_id)` | Quick top-15 snapshot for in-progress tournaments |
+| `pga_leaderboard_holes(tournament_id, round)` | Hole-by-hole scores for the entire field |
+| `pga_leaderboard_strokes(tournament_id)` | Strokes-gained leaderboard |
+| `pga_field(tournament_id)` | Tournament field with OWGR, withdrawn/alternate flags |
 | `pga_tee_times(tournament_id)` | Tee time groupings with start tees and player assignments |
 | `pga_scorecard(tournament_id, player_id)` | Hole-by-hole scorecard with par, score, yardage, and status |
 | `pga_shot_details(tournament_id, player_id, round)` | Shot-by-shot tracking data with coordinates, distances, and play-by-play |
+| `pga_shot_scatter(tournament_id, course, hole)` | Hole-level shot cloud |
 | `pga_odds(tournament_id)` | Betting odds to win for the tournament field |
+| `pga_odds_markets(tournament_id)` | Available betting markets (matchups, finishes, props, 3-ball) |
+| `pga_odds_player(tournament_id, player_id)` | Per-player betting lines |
 | `pga_coverage(tournament_id)` | Broadcast and streaming schedule with networks and time windows |
+| `pga_weather(tournament_id)` | Hourly and daily forecast for the tournament site |
 
 ### Statistics & Standings
 
 | Function | Description |
 |---|---|
 | `pga_stats(stat_id, year, tour, event_query)` | Any of 300+ stats with full player rankings (data from 2004–2026). Accepts vectors of `stat_id` / `year` for batched requests. |
+| `pga_stat_catalog(tour, year)` | Live stat catalog (id, name, category) from the stats hub |
 | `pga_fedex_cup(year, tour, event_query)` | FedExCup standings with projected and official rankings |
+| `pga_cup_standings(year, tour)` | Default tour-cup table (FedExCup / Schwab / Fortinet / Americas) |
+| `pga_signature_standings(tour)` | Signature-event standings |
+| `pga_priority_rankings(tour, year)` | Priority / exemption ranking categories |
 | `pga_scorecard_comparison(tournament_id, player_ids, category)` | Head-to-head stat comparison between players |
 
 ### Players & Tournaments
@@ -64,7 +79,10 @@ pga_schedule(2025)
 |---|---|
 | `pga_players(tour)` | Full player directory with name, country, age, and active status |
 | `pga_tournaments(ids)` | Tournament metadata including location, courses, weather, and format |
+| `pga_tournament_overview(id)` | Hub-page overview, champions, and course blurbs |
+| `pga_tournament_past_results(id, year)` | Historical field results for an event |
 | `pga_schedule(year, tour)` | Full season schedule with dates, purse, course, champion, and FedExCup points |
+| `pga_course_stats(tournament_id)` | Hole-level scoring averages and birdie/bogey counts |
 
 ### Player Profiles
 
@@ -93,7 +111,7 @@ pga_schedule(2025)
 
 | Dataset | Description |
 |---|---|
-| `stat_ids` | Lookup table of 340 stat IDs with names, categories, and subcategories |
+| `stat_ids` | Lookup table of 470+ stat IDs with names, categories, and subcategories |
 
 ## Tour Codes
 
@@ -102,6 +120,7 @@ pga_schedule(2025)
 | `"R"` | PGA Tour |
 | `"S"` | PGA Tour Champions |
 | `"H"` | Korn Ferry Tour |
+| `"Y"` | PGA Tour Americas |
 
 ## Tournament IDs
 
@@ -181,7 +200,7 @@ pga_fedex_cup(2024)
 
 # Full season schedule with dates, purse, course, champion
 schedule_2025 <- pga_schedule(2025)
-schedule_2026 <- pga_schedule(2026)  # 48 events, future events included
+schedule_2026 <- pga_schedule(2026)  # 49 events, future events included
 ```
 
 ### Live Tournament Tracking
@@ -204,7 +223,7 @@ videos     <- pga_tourcast_videos("R2026475", player_id, round = 1)
 ### Player Research
 
 ```r
-# Get all PGA Tour players
+# Get all PGA Tour players (2,700+)
 players <- pga_players("R")
 
 # Filter to active players
@@ -230,7 +249,7 @@ videos <- pga_videos(player_ids = "46046", tournament_id = "475")
 
 ## Stat Categories
 
-The `stat_ids` dataset covers 340 stats across these categories:
+The `stat_ids` dataset covers 470+ stats across these categories:
 
 - **Strokes Gained** — Total, Tee-to-Green, Off-the-Tee, Approach, Around-the-Green, Putting
 - **Off The Tee** — Driving distance, accuracy, ball speed, club head speed, launch angle, spin rate
